@@ -54,6 +54,8 @@ filter_column_range_ff <- function(table_list, column, min, max) {
   return(table_list)
 }
 
+
+
 ##' .. content for \description{} (no empty lines) ..
 ##'
 ##' .. content for \details{} ..
@@ -89,6 +91,10 @@ cut_out_fasta_single <- function(fasta, start, end, strand) {
   }
   return(fasta_seq)
 }
+
+
+
+
 ##' .. content for \description{} (no empty lines) ..
 ##'
 ##' .. content for \details{} ..
@@ -105,6 +111,8 @@ num2freq <- function(seqnum, mer_length) {
   colnames(freqs) <- mers
   return(t(freqs))
 }
+
+
 
 ##' .. content for \description{} (no empty lines) ..
 ##'
@@ -123,6 +131,7 @@ num2weightedfreq <- function(seqnum, weights, mer_length) {
   colnames(freqs) <- mers
   return(t(freqs))
 }
+
 
 
 ##' .. content for \description{} (no empty lines) ..
@@ -178,6 +187,7 @@ cut_out_seqnums_from_one_chr <- function(pos, strand, size, order, chr_num) {
 }
 
 
+
 ##' .. content for \description{} (no empty lines) ..
 ##'
 ##' .. content for \details{} ..
@@ -200,6 +210,9 @@ fasta2sparse <- function(fasta, mer_length) {
   
   return( fasta_sparse )
 }
+
+
+
 
 ##' .. content for \description{} (no empty lines) ..
 ##'
@@ -356,6 +369,8 @@ convertSparse2Complete_ff <- function(sparse, lengths) {
   invisible(complete)
 }
 
+
+
 ##' .. content for \description{} (no empty lines) ..
 ##'
 ##' .. content for \details{} ..
@@ -367,14 +382,36 @@ convertSparse2Complete_ff <- function(sparse, lengths) {
 ##' @return smeared ff vector
 ##' @author Mark Heron
 smear_ff <- function(x, from=0, to=1) {
+  # the from, to parameter meaning seem reversed compared to my intuition (at least at the moment)
+  # so maybe I should change it ...
   
-  len <- length(x)
-  smeared <- ff(0,length=len)
-  for(i in from:to) {
-    smeared[] <- smeared[] + c(rep(0,-min(i,0)),x[max(i+1,1):min(len+i,len)],rep(0,max(i,0)))
+  if(from == 0 & to == 0) {
+    return(x)
   }
-  return(smeared)
+  
+  smooth_len <- to-from+1
+  times <- floor(log2(smooth_len))-1
+  
+  smeared <- c(x[], rep(0,to)) #to
+  len <- length(smeared)
+  for(iter in 0:times) {
+    i <- 2^iter
+    smeared <- smeared + c(rep(0,i),smeared[1:(len-i)])
+  }
+  if((2^(times+1)) < smooth_len) {
+    len <- length(x)
+    for(i in (-to-1+((2^(times+1)+1):smooth_len)) ) {
+      smeared <- smeared + c(rep(0,to-min(-i,0)),x[max(-i+1,1):min(len-i,len)],rep(0,max(-i,0)))
+    }
+  }
+  if(to == 0) {
+    return(as.ff(smeared))
+  } else {
+    return(as.ff(smeared[-(1:to)])) #from
+  }
 }
+
+
 
 ##' .. content for \description{} (no empty lines) ..
 ##'
@@ -390,6 +427,7 @@ convertSparse2occ_ff <- function(sparse, lengths) {
   occ <- lapply(convertSparse2Complete_ff(sparse, lengths), function (x) smear_ff(x, -73,73))
   return(occ)
 }
+
 
 
 ##' .. content for \description{} (no empty lines) ..
@@ -423,6 +461,8 @@ get_dyad_pos <- function(data_list, dyad_base="center", offset=73) {
   return(dyad_pos)
 }
 
+
+
 ##' .. content for \description{} (no empty lines) ..
 ##'
 ##' .. content for \details{} ..
@@ -441,6 +481,7 @@ cov_ff <- function(x,y,meaned=FALSE) {
     return( sum( (x- mean(x, na.rm=TRUE))*(y-mean(y, na.rm=TRUE)) ) )
   }
 }
+
 
 
 ##' .. content for \description{} (no empty lines) ..
@@ -462,6 +503,7 @@ sd_ff <- function(x, meaned=FALSE) {
 }
 
 
+
 ##' .. content for \description{} (no empty lines) ..
 ##'
 ##' .. content for \details{} ..
@@ -480,6 +522,7 @@ cor_ff <- function(x,y) {
 
 
 
+
 ##' .. content for \description{} (no empty lines) ..
 ##'
 ##' .. content for \details{} ..
@@ -490,11 +533,12 @@ cor_ff <- function(x,y) {
 ##' @author Mark Heron
 mean_list <- function(x) {
   
-  x_sum <- sum(lapply(x, sum))
-  x_len <- sum(lapply(x, length))
+  x_sum <- sum(unlist(lapply(x, sum)))
+  x_len <- sum(unlist(lapply(x, length)))
   
   return(x_sum/x_len)
 }
+
 
 
 
@@ -509,6 +553,7 @@ mean_list <- function(x) {
 center_list <- function(x) {
   return( lapply(x, function(a) a - mean_list(x)) )
 }
+
 
 
 
@@ -545,9 +590,9 @@ cov_ff_list <- function(x,y,meaned=FALSE) {
 sd_ff_list <- function(x, meaned=FALSE) {
   
   if(meaned) {
-    return( sqrt(sum( lapply(x, function (a) sum(a^2) ) ) ) )
+    return( sqrt(sum( unlist(lapply( x, function (a) sum(a^2) )) )) )
   } else {
-    return( sqrt(sum( lapply(center_list(x), function (a) sum(a^2) )) ))
+    return( sqrt(sum( unlist(lapply( center_list(x), function (a) sum(a^2) )) )) )
   }  
 }
 
@@ -568,6 +613,8 @@ cor_ff_list <- function(x,y) {
   meaned_y = center_list(y)
   return( cov_ff_list(meaned_x, meaned_y, meaned=TRUE) / (sd_ff_list(meaned_x, meaned=TRUE)*sd_ff_list(meaned_y, meaned=TRUE)) )  
 }
+
+
 
 ##' .. content for \description{} (no empty lines) ..
 ##'
