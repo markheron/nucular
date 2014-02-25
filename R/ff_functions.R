@@ -54,18 +54,18 @@ smear_ff <- function(x, from=0, to=1) {
 
 
 
+##' cov_ff
+##' 
 ##' Computest the covariance between two ff vectors.
-##'
 ##' @export
-##' @title cov_ff
 ##' @param x a ff vector
 ##' @param y a second ff vector
-##' @param meaned boolean, is the mean already = 0 ?
+##' @param centered boolean, is the mean already = 0 ?
 ##' @return covariance between x and y
 ##' @author Mark Heron
-cov_ff <- function(x,y,meaned=FALSE) {
+cov_ff <- function(x,y,centered=FALSE) {
   
-  if(meaned) {
+  if(centered) {
     return( sum( x*y ) )
   } else {
     return( sum( (x- mean(x, na.rm=TRUE))*(y-mean(y, na.rm=TRUE)) ) )
@@ -74,17 +74,17 @@ cov_ff <- function(x,y,meaned=FALSE) {
 
 
 
+##' sd_ff
+##' 
 ##' Computes the standard deviation of a vector.
-##'
 ##' @export
-##' @title sd_ff
 ##' @param x a ff vector
-##' @param meaned boolean, is the mean already = 0 ?
+##' @param centered boolean, is the mean already = 0 ?
 ##' @return standard deviation of x
 ##' @author Mark Heron
-sd_ff <- function(x, meaned=FALSE) {
+sd_ff <- function(x, centered=FALSE) {
   
-  if(meaned) {
+  if(centered) {
     return( sqrt(sum( x^2 ) ) )
   } else {
     return( sqrt(sum( (x-mean(x, na.rm=TRUE))^2 )) )
@@ -93,17 +93,17 @@ sd_ff <- function(x, meaned=FALSE) {
 
 
 
+##' cor_ff
+##' 
 ##' Computes the correlation between two vectors.
-##'
 ##' @export
-##' @title cor_ff
 ##' @param x a ff vector
-##' @param ya second ff vector
+##' @param y a second ff vector
 ##' @return pearson correlation between x and y
 ##' @author Mark Heron
 cor_ff <- function(x,y) {
   
-  meaned_x = x - mean(x, na.rm=TRUE)
-  meaned_y = y - mean(y, na.rm=TRUE)
-  return( cov_ff(meaned_x, meaned_y, meaned=TRUE) / (sd_ff(meaned_x, meaned=TRUE)*sd_ff(meaned_y, meaned=TRUE)) )  
+  centered_x = x - mean(x, na.rm=TRUE)
+  centered_y = y - mean(y, na.rm=TRUE)
+  return( cov_ff(centered_x, centered_y, centered=TRUE) / (sd_ff(centered_x, centered=TRUE)*sd_ff(centered_y, centered=TRUE)) )  
 }

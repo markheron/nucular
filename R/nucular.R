@@ -19,52 +19,15 @@ library(pron)
 library(Biostrings)
 
 
-##' .. content for \description{} (no empty lines) ..
+
+
+##' hist_ff_list
 ##'
-##' .. content for \details{} ..
+##' Plots a histogram for the values in column for every ff_list element.
 ##' @export
-##' @title table_to_ff
-##' @param table_list 
-##' @return list of ff objects
-##' @author Mark Heron
-table_to_ff <- function(table_list) {
-  
-  ff_list <- list()
-  for(name in names(table_list)) {
-    ff_list[[name]] <- as.ffdf(table_list[[name]])
-  }
-  return(ff_list)
-}
-
-
-
-##' .. content for \description{} (no empty lines) ..
-##'
-##' .. content for \details{} ..
-##' @export
-##' @title filter_column_range_ff
-##' @param table_list 
-##' @param column 
-##' @param min 
-##' @param max 
-##' @return list of ff's filtered by min/max on column
-##' @author Mark Heron
-filter_column_range_ff <- function(table_list, column, min, max) {
-  
-  table_list <- lapply(table_list, function (x) x[ (x[,column] >= min) & (x[,column] <= max) ,])
-  return(table_list)
-}
-
-
-
-##' .. content for \description{} (no empty lines) ..
-##'
-##' .. content for \details{} ..
-##' @export
-##' @title hist_ff_list
-##' @param ff_list 
-##' @param column 
-##' @param ...
+##' @param ff_list list with ff objects
+##' @param column to plot the histogram for
+##' @param ... parameters that can be passed on the hist
 ##' @author Mark Heron
 hist_ff_list <- function(ff_list, column, ...) {
   hist( Reduce(c, lapply(ff_list, function (x) x[,column])), ...)
@@ -73,36 +36,13 @@ hist_ff_list <- function(ff_list, column, ...) {
 
 
 
-##' cut's out single region from a single DNAString
+
+##' num2freq
 ##'
-##' .. content for \details{} ..
+##' Calculates the mere frequencies given a oligonucleotide-coded representation matrix
 ##' @export
-##' @title cut_out_fasta_single
-##' @param fasta 
-##' @param start 
-##' @param end 
-##' @param strand 
-##' @return DNAString of cut out fragment
-##' @author Mark Heron
-cut_out_fasta_single <- function(fasta, start, end, strand) {
-  
-  fasta_seq <- subseq(fasta, start, end)
-  if(strand == "-") {
-    fasta_seq <- reverseComplement(fasta_seq)
-  }
-  return(fasta_seq)
-}
-
-
-
-
-##' .. content for \description{} (no empty lines) ..
-##'
-##' .. content for \details{} ..
-##' @export
-##' @title num2freq
-##' @param seqnum 
-##' @param mer_length 
+##' @param seqnum oligonucleotide-coded representation of fasta sequences
+##' @param mer_length length of the oligonucleotide-coding used (order+1)
 ##' @return matrix of oligonucleotide frequencies
 ##' @author Mark Heron
 num2freq <- function(seqnum, mer_length) {
@@ -114,15 +54,13 @@ num2freq <- function(seqnum, mer_length) {
 }
 
 
-
-##' .. content for \description{} (no empty lines) ..
+##' num2weightedfreq
 ##'
-##' .. content for \details{} ..
+##' Calculates the weighted mere frequencies given a oligonucleotide-coded representation matrix
 ##' @export
-##' @title num2weightedfreq
-##' @param seqnum 
-##' @param weights 
-##' @param mer_length 
+##' @param seqnum oligonucleotide-coded representation of fasta sequences
+##' @param weights of the diferent fasta sequences
+##' @param mer_length length of the oligonucleotide-coding used (order+1)
 ##' @return matrix of weighted oligonucleotide frequencies
 ##' @author Mark Heron
 num2weightedfreq <- function(seqnum, weights, mer_length) {
@@ -135,16 +73,35 @@ num2weightedfreq <- function(seqnum, weights, mer_length) {
 
 
 
-##' .. content for \description{} (no empty lines) ..
-##'
-##' .. content for \details{} ..
+##' cut_out_fasta_single
+##' 
+##' Cut's out single region from a single DNAString.
 ##' @export
-##' @title cut_out_fasta_multiple_from_one_chr
-##' @param pos 
-##' @param strand 
-##' @param size 
-##' @param order 
-##' @param chr_fasta 
+##' @param fasta DNAString to cut out from
+##' @param start of region to cut out
+##' @param end of region to cut out
+##' @param strand cut out forward or reverse complement
+##' @return DNAString of cut out fragment
+##' @author Mark Heron
+cut_out_fasta_single <- function(fasta, start, end, strand) {
+  
+  fasta_seq <- subseq(fasta, start, end)
+  if(strand == "-") {
+    fasta_seq <- reverseComplement(fasta_seq)
+  }
+  return(fasta_seq)
+}
+
+
+##' cut_out_fasta_multiple_from_one_chr
+##'
+##' Cut's out multiple regions from a single DNAString (i.e. typically chromosome).
+##' @export
+##' @param pos vector of central position for cuting out the region
+##' @param strand vector of "+"/"-" to specify if the forward or the reverse complement sequence shall be used
+##' @param size region size before and after the positions to cut out
+##' @param order what oligonucleotide order will later be used (to extend the cut region for symetry)
+##' @param chr_fasta DNAString of the chromosome from which to cut out the regions
 ##' @return DNAStringSet of cut out fragment
 ##' @author Mark Heron
 cut_out_fasta_multiple_from_one_chr <- function(pos, strand, size, order, chr_fasta) {
@@ -164,16 +121,15 @@ cut_out_fasta_multiple_from_one_chr <- function(pos, strand, size, order, chr_fa
 
 
 
-##' .. content for \description{} (no empty lines) ..
+##' cut_out_seqnums_from_one_chr
 ##'
-##' .. content for \details{} ..
+##' Cut's out multiple regions from a single oligonucleotide-coded respresentation vector (i.e. typically chromosome).
 ##' @export
-##' @title cut_out_seqnums_from_one_chr
-##' @param pos 
-##' @param strand 
-##' @param size 
-##' @param order 
-##' @param chr_num 
+##' @param pos vector of central position for cuting out the region
+##' @param strand vector of "+"/"-" to specify if the forward or the reverse complement sequence shall be used
+##' @param size region size before and after the positions to cut out
+##' @param order what oligonucleotide order was used to code the fasta sequence
+##' @param chr_num oligonucleotide-coded respresentation of the chromosome from which to cut out the regions
 ##' @return matrix of cut out fragment
 ##' @author Mark Heron
 cut_out_seqnums_from_one_chr <- function(pos, strand, size, order, chr_num) {
@@ -189,14 +145,13 @@ cut_out_seqnums_from_one_chr <- function(pos, strand, size, order, chr_num) {
 
 
 
-##' .. content for \description{} (no empty lines) ..
+##' fasta2sparse
 ##'
-##' .. content for \details{} ..
+##' Creates sparse coding matrix of a fasta sequence.
 ##' @export
-##' @title fasta2sparse
-##' @param fasta 
-##' @param mer_length 
-##' @return matrix of sparse representation of the DNAString
+##' @param fasta DNAString
+##' @param mer_length oligonucleotide length to code the sequence in
+##' @return sparse representation matrix of the DNAString
 ##' @author Mark Heron
 fasta2sparse <- function(fasta, mer_length) {
   
@@ -215,13 +170,12 @@ fasta2sparse <- function(fasta, mer_length) {
 
 
 
-##' .. content for \description{} (no empty lines) ..
+##' fasta2sparse_ff
 ##'
-##' .. content for \details{} ..
+##' Creates sparse coding ff object of a fasta sequence.
 ##' @export
-##' @title fasta2sparse_ff
-##' @param fasta 
-##' @param mer_length 
+##' @param fasta DNAString
+##' @param mer_length oligonucleotide length to code the sequence in
 ##' @return sparse ff.matrix representation of the DNAString
 ##' @author Mark Heron
 fasta2sparse_ff <- function(fasta, mer_length) {
@@ -239,11 +193,10 @@ fasta2sparse_ff <- function(fasta, mer_length) {
 
 
 
-##' .. content for \description{} (no empty lines) ..
+##' plotGenomicCutouts
 ##'
-##' .. content for \details{} ..
+##' Create oligonucleotide frequency profile figure from genome positions
 ##' @export
-##' @title plotGenomicCutouts
 ##' @param pos 
 ##' @param strand 
 ##' @param size 
@@ -350,13 +303,12 @@ plotGenomicCutouts <- function(pos, strand, size, order, genome_folder, chromoso
 
 
 
-##' .. content for \description{} (no empty lines) ..
+##' convertSparse2Complete_ff
 ##'
-##' .. content for \details{} ..
+##' Converts sparse representation to complete representation as ff vectors of genomic tags.
 ##' @export
-##' @title convertSparse2Complete_ff
-##' @param sparse 
-##' @param lengths
+##' @param sparse list of sparse representation matricies
+##' @param lengths list of chromosome lengths, names must match those of sparse
 ##' @return list of ff vectors with complete representation of genomic tags
 ##' @author Mark Heron
 convertSparse2Complete_ff <- function(sparse, lengths) {
@@ -374,13 +326,12 @@ convertSparse2Complete_ff <- function(sparse, lengths) {
 
 
 
-##' .. content for \description{} (no empty lines) ..
+##' convertSparse2occ_ff
 ##'
-##' .. content for \details{} ..
+##' Converts sparse representation of dyad positions to nucleosome occupancy as ff vectors.
 ##' @export
-##' @title convertSparse2occ_ff
-##' @param sparse 
-##' @param lengths 
+##' @param sparse list of sparse representation matricies
+##' @param lengths list of chromosome lengths, names must match those of sparse
 ##' @return list of ff vectors with genomic occuopancy
 ##' @author Mark Heron
 convertSparse2occ_ff <- function(sparse, lengths) {
@@ -391,15 +342,14 @@ convertSparse2occ_ff <- function(sparse, lengths) {
 
 
 
-##' .. content for \description{} (no empty lines) ..
+##' get_dyad_pos
 ##'
-##' .. content for \details{} ..
+##' Extracts the dyad positions in the chosen way from a table with mapped fragment start and ends
 ##' @export
-##' @title get_dyad_pos
-##' @param data_list 
-##' @param dyad_base 
-##' @param offset 
-##' @return list of matrices with dyad positions and intensity
+##' @param data_list list of mapped fragments for each chromosome
+##' @param dyad_base based on what position should the dyad position be calculated
+##' @param offset offset if the dyad position isn't calculated from the center
+##' @return list of ff matricies with dyad positions and intensity
 ##' @author Mark Heron
 get_dyad_pos <- function(data_list, dyad_base="center", offset=73) {
   
@@ -424,99 +374,20 @@ get_dyad_pos <- function(data_list, dyad_base="center", offset=73) {
 
 
 
-
-
-##' .. content for \description{} (no empty lines) ..
+##' adjust_X_chr
 ##'
-##' .. content for \details{} ..
+##' Adjusts lower X chromosome counts due cells being male or a mixture of male/female.
 ##' @export
-##' @title mean_list
-##' @param x 
-##' @return mean
+##' @param ff_list list of ff objects each representing data of one chromosome
+##' @param X_chr name of the X chromosome in ff_list
+##' @param Xfactor factor by which the counts should be adjusted (2 for male celllines, 4/3 for male/female mixtures)
+##' @return adjusted ff_list
 ##' @author Mark Heron
-mean_list <- function(x) {
+adjust_X_chr <- function(ff_list, X_chr, Xfactor) {
   
-  x_sum <- sum(unlist(lapply(x, sum)))
-  x_len <- sum(unlist(lapply(x, length)))
-  
-  return(x_sum/x_len)
+  ff_list[[X_chr]][,2] <- ff_list[[X_chr]][,2]*Xfactor
+  return(ff_list)
 }
-
-
-
-
-##' .. content for \description{} (no empty lines) ..
-##'
-##' .. content for \details{} ..
-##' @export
-##' @title center_list
-##' @param x 
-##' @return list of x's after removing their overall mean
-##' @author Mark Heron
-center_list <- function(x) {
-  return( lapply(x, function(a) a - mean_list(x)) )
-}
-
-
-
-
-##' .. content for \description{} (no empty lines) ..
-##'
-##' .. content for \details{} ..
-##' @export
-##' @title cov_ff_list
-##' @param x 
-##' @param y 
-##' @param meaned 
-##' @return covariance
-##' @author Mark Heron
-cov_ff_list <- function(x,y,meaned=FALSE) {
-  
-  if(meaned) {
-    return( sum( mapply(function (a,b) sum(a*b) ,x,y)) )
-  } else {
-    return( sum( mapply(function (a,b) sum(a*b) , center_list(x), center_list(y))))
-  }
-}
-
-
-
-##' .. content for \description{} (no empty lines) ..
-##'
-##' .. content for \details{} ..
-##' @export
-##' @title sd_ff_list
-##' @param x 
-##' @param meaned 
-##' @return standard deviation
-##' @author Mark Heron
-sd_ff_list <- function(x, meaned=FALSE) {
-  
-  if(meaned) {
-    return( sqrt(sum( unlist(lapply( x, function (a) sum(a^2) )) )) )
-  } else {
-    return( sqrt(sum( unlist(lapply( center_list(x), function (a) sum(a^2) )) )) )
-  }  
-}
-
-
-
-##' .. content for \description{} (no empty lines) ..
-##'
-##' .. content for \details{} ..
-##' @export
-##' @title cor_ff_list
-##' @param x 
-##' @param y 
-##' @return correlation
-##' @author Mark Heron
-cor_ff_list <- function(x,y) {
-  
-  meaned_x = center_list(x)
-  meaned_y = center_list(y)
-  return( cov_ff_list(meaned_x, meaned_y, meaned=TRUE) / (sd_ff_list(meaned_x, meaned=TRUE)*sd_ff_list(meaned_y, meaned=TRUE)) )  
-}
-
 
 
 ##' .. content for \description{} (no empty lines) ..
@@ -579,19 +450,13 @@ cor_nucs_multiple <- function(data_list, lengths) {
   occ_list <- list()
   for(data_name in names(data_list)) {
     
-    occ_list[[data_name]] <- ff(0, length=0)
-    complete <- convertSparse2Complete_ff(data_list[[data_name]][names(lengths)], lengths)
-    
-    occ_list[[data_name]] <- smear_ff(complete[[chr]][[names(lengths)[1]]], -73,73)
-    for(chr in names(lengths)[-1]) {
-      occ_list[[data_name]] <- c(occ_list[[data_name]], smear_ff(complete[[chr]], -73,73))
-    }
+    occ_list[[data_name]] <- convertSparse2occ_ff(data_list[[data_name]][names(lengths)], lengths)
   }
   
   cor_matrix <- matrix(0, nrow=length(occ_list), ncol=length(occ_list))
   for(i in 1:(length(occ_list)-1)) {
     for(j in (i+1):length(occ_list)) {
-      cor_matrix[i,j] <- cor_ff(occ_list[[i]], occ_list[[j]])
+      cor_matrix[i,j] <- cor_ff_list(occ_list[[i]], occ_list[[j]])
     }
   }
   return(cor_matrix)
