@@ -21,19 +21,58 @@ library(Biostrings)
 
 
 
-##' hist_ff_list
+##' ruler_axis
 ##'
-##' Plots a histogram for the values in column for every ff_list element.
+##' Adds an axis that looks like a ruler (with minor ticks without labels).
 ##' @export
-##' @param ff_list list with ff objects
-##' @param column to plot the histogram for
-##' @param ... parameters that can be passed on the hist
+##' @param side to add the axis to
+##' @param data to better estimate the start/end of the axis (if not present it uses the plot dimensions)
 ##' @author Mark Heron
-hist_ff_list <- function(ff_list, column, ...) {
-  hist( Reduce(c, lapply(ff_list, function (x) x[,column])), ...)
-  gc()
+ruler_axis <- function(side=1, data=NULL) {
+  
+  axis_p <- c()
+  if(length(data) > 0) {
+    axis_p <- range(data)
+  } else if(side == 1 | side ==3) {
+    axis_p <- par("usr")[1:2]
+  } else {
+    axis_p <- par("usr")[3:4]
+  }
+  
+  p_5 <- pretty(axis_p, 5)
+  axis(side, p_5 , lwd=0,  lwd.tick=1)
+  p_10 <- setdiff(pretty(axis_p, 10, u5.bias=10), pretty(axis_p, 5))
+  if( length(p_10) == 0) {
+    axis(side, setdiff(pretty(axis_p, 25), p_5), labels=FALSE, tcl=-0.2)
+  } else {
+    axis(side, p_10, lwd=0, lwd.tick=1, labels=FALSE, tcl=-0.4)
+    axis(side, setdiff(pretty(axis_p, 50), union(p_10, p_5)), labels=FALSE, tcl=-0.2)
+  }
 }
 
+
+
+##' convertRaw2Rdata
+##'
+##' Converts raw data tables from the galaxy pipeline to lists of matricies that is saved as an Rdata for futher use.
+##' @export
+##' @param name of the data file
+##' @param folder in which the file is to be found
+##' @param extension of the data file, standard is ".tabular"
+##' @author Mark Heron
+convertRaw2Rdata <- function(name, folder="", extension=".tabular") {
+  
+  raw_table <- read.table.ffdf(file=paste0(folder,name,extension), sep="\t", comment.char="", header=FALSE, col.names=c("chr", "start", "stop", "length", NA), colClasses=c("factor", "integer", "integer", "integer","NULL"))
+  
+  chr_list_table <- list()
+  
+  for( chr_name in levels(raw_table[,1])) {
+    chr_list_table[[chr_name]] <- subset(raw_table,chr == chr_name )[-1]
+  }
+  chr_table <- lapply(chr_list_table, as.ram)
+  save(chr_table, file=paste0(name,"_chr_table.Rdata"), compress=TRUE)
+  return(chr_table)
+}
 
 
 
@@ -137,7 +176,7 @@ cut_out_seqnums_from_one_chr <- function(pos, strand, size, order, chr_num) {
   for(i in 1:length(seqs)) {
     
     # seqs[i] <- cut_out_fasta_single(chr_fasta, start=pos[i]-size -((strand=="-")*order), end=pos[i]+size +((strand=="+")*order), strand )
-    seqs <-  vapply(pos, function (i) chr_num[i+(-region -((strand=="-")*order)):(region +((strand=="+")*order))], FUN.VALUE=rep(0, length((-region -((strand=="-")*order)):(region +((strand=="+")*order)))))
+    seqs <-  vapply(pos, function (i) chr_num[i+(-size -((strand=="-")*order)):(size +((strand=="+")*order))], FUN.VALUE=rep(0, length((-size -((strand=="-")*order)):(size +((strand=="+")*order)))))
     
   }
   return(seqs)
@@ -197,35 +236,29 @@ fasta2sparse_ff <- function(fasta, mer_length) {
 ##'
 ##' Create oligonucleotide frequency profile figure from genome positions
 ##' @export
-##' @param pos 
-##' @param strand 
-##' @param size 
-##' @param order 
-##' @param genome_folder 
-##' @param chromosomes 
-##' @return frequency matrix
+##' @param pos ff_list of the nucleosome fragments
+##' @param strand information at the moment ignored
+##' @param size in either direction of the dyad position for which to count and plot the oligo frequencies
+##' @param order of the oligonucleotides
+##' @param genome_folder where to find the genome fasta files
+##' @param chromosomes which chromosomes to use (must be contained in both genome_folder and pos)
+##' @param sample if >0 only use the first sample positions per chromosome
+##' @return olinucleotide frequency matrix, rows are the oligonucleotides, cols the positions around the dyad
 ##' @author Mark Heron
-plotGenomicCutouts <- function(pos, strand, size, order, genome_folder, chromosomes) {
+plotGenomicCutouts <- function(pos, strand, size, order, genome_folder, chromosomes, sample=0) {
   
   fasta_genome <- read_genome_fasta(genome_folder)
   
   freqs <- matrix(0, nrow=length(create_mers(order+1)), size*2+1)
   
-  for(chr in chromosomes) { #[[1]]) {
+  for(chr in chromosomes) {
     
     freqs_chr <- matrix(0, nrow=length(create_mers(order+1)), size*2+1)
     
-    good <- (1:nrow(pos[[chr]]))[(pos[[chr]][,1] > size & pos[[chr]][,1] < width(fasta_genome[[paste0("chr",chr)]]) - size)] #[1:100000]
-    
-    #   chr_num <- fasta2num(genome[[paste0("chr",chr)]], mer_length=order+1 )
-    #   seqnum <- t(cut_out_seqnums_from_one_chr(pos[[chr]][good,1], strand, size, order, chr_num))
-    
-    #     fasta <- cut_out_fasta_multiple_from_one_chr(pos[[chr]][good,1], "+", size, order, fasta_genome[[paste0("chr",chr)]])
-    #   
-    #     seqnum <- fasta2num(fasta, mer_length=order+1)
-    #     
-    #     freqs <- freqs + num2weightedfreq(seqnum, pos[[chr]][good,2], order+1)
-    
+    good <- (1:nrow(pos[[chr]]))[(pos[[chr]][,1] > size & pos[[chr]][,1] < width(fasta_genome[[paste0("chr",chr)]]) - size)]
+    if(sample > 0) {
+      good <- good[1:sample]
+    }    
     
     chr_num <- fasta2num(fasta_genome[[paste0("chr",chr)]], order+1)
     chr_num[is.na(chr_num)] <- 0
@@ -238,56 +271,6 @@ plotGenomicCutouts <- function(pos, strand, size, order, genome_folder, chromoso
         freqs_chr[i,j] <- sum( chr_bool[pos_chr[,1]-size+j] * pos_chr[,2])
       }        
     }
-    
-    
-    #     chr_sparse <- fasta2sparse_ff(fasta_genome[[paste0("chr",chr)]], order+1)
-    # 
-    #     pos_chr <- pos[[chr]][good,]
-    #     chr_length <- width(fasta_genome[[1]])-size
-    #     frag_length <- 100000
-    #     frag_start <- 1
-    
-    #     frag_nr <- 1+(pos_chr[,1] -1*size) %/% frag_length
-    #     for(j in 1:(chr_length %/% frag_length)) {
-    #       
-    #      if(j == 2) {browser()}
-    #       
-    #       chr_sparse_frag <- chr_sparse[,frag_start+(0: min(frag_length+4*size, chr_length-frag_start-1))]
-    #       for(p in pos_chr[frag_nr == j,]) {
-    #         freqs_chr <- freqs_chr + chr_sparse_frag[,p[1]-frag_start +(-size):(size)]*p[2]
-    #       }
-    #       frag_start <- frag_start + frag_length
-    #     }
-    
-    
-    # chr_sparse_frag <- chr_sparse[,frag_start+(0: min(frag_length+4*size, chr_length-frag_start-1))]
-    #     for(i in 1:nrow(pos_chr)) {
-    #       pos_now <- pos_chr[i,1]
-    #       if(pos_now >= (frag_start+frag_length+2*size)) {
-    #         while(pos_now >= (frag_start+frag_length+2*size)) {
-    #           frag_start <- frag_start+frag_length
-    #         }
-    #         chr_sparse_frag <- chr_sparse[,frag_start+(0: min(frag_length+4*size, chr_length-frag_start-1))]
-    #       }
-    #       freqs_chr <- freqs_chr + chr_sparse_frag[,pos_now-frag_start +(-size):(size)]*pos[[chr]][i,2]
-    #     }
-    
-    #     i <- 1
-    #     max_i <- nrow(pos_chr)
-    #     for(frag_start in seq(1,chr_length, by=frag_length)) {
-    #       pos_now <- pos_chr[i,1]
-    #       chr_sparse_frag <- chr_sparse[,frag_start+(0: min(frag_length+4*size, chr_length-frag_start-1))]
-    #       
-    #       while(pos_now <= (frag_start+frag_length+2*size) & i < max_i) {
-    #         freqs_chr <- freqs_chr + chr_sparse_frag[,pos_now-frag_start +(-size):(size)]*pos[[chr]][i,2]
-    #         i <- i+1
-    #         pos_now <- pos_chr[i,1]
-    #       }
-    #     }
-    
-    #     for(i in good) {
-    #       freqs_chr <- freqs_chr + chr_sparse[,pos[[chr]][i,1]+(-size):(size)]*pos[[chr]][i,2]
-    #     }
     
     freqs <- freqs + freqs_chr/100000
   }
@@ -322,23 +305,6 @@ convertSparse2Complete_ff <- function(sparse, lengths) {
   invisible(complete)
 }
 
-
-
-
-
-##' convertSparse2occ_ff
-##'
-##' Converts sparse representation of dyad positions to nucleosome occupancy as ff vectors.
-##' @export
-##' @param sparse list of sparse representation matricies
-##' @param lengths list of chromosome lengths, names must match those of sparse
-##' @return list of ff vectors with genomic occuopancy
-##' @author Mark Heron
-convertSparse2occ_ff <- function(sparse, lengths) {
-  
-  occ <- lapply(convertSparse2Complete_ff(sparse, lengths), function (x) smear_ff(x, -73,73))
-  return(occ)
-}
 
 
 
@@ -390,35 +356,32 @@ adjust_X_chr <- function(ff_list, X_chr, Xfactor) {
 }
 
 
-##' .. content for \description{} (no empty lines) ..
+##' cor_nucs
 ##'
-##' .. content for \details{} ..
+##' Calculates the pearson correlation between two nucleosome occupancy profiles given their sparse representation.
 ##' @export
-##' @title cor_nucs
-##' @param data_list1 
-##' @param data_list2 
-##' @param lengths 
-##' @return correlation
+##' @param data_list1 first ff_list of nucleosome positions
+##' @param data_list2 second ff_list of nucleosome positions
+##' @param lengths list of chromosome lengths (names must match subset of the data_list's )
+##' @return correlation pearson correlation between the nucleosome occupancies
 ##' @author Mark Heron
 cor_nucs <- function(data_list1, data_list2, lengths) {
   
-  occ1 <- convertSparse2occ_ff(data_list1[names(chr_lengths)], lengths)
-  occ2 <- convertSparse2occ_ff(data_list2[names(chr_lengths)], lengths)
+  occ1 <- convertSparse2occ_ff_list(data_list1[names(lengths)], lengths)
+  occ2 <- convertSparse2occ_ff_list(data_list2[names(lengths)], lengths)
   
   return(cor_ff_list(occ1, occ2))
 }
 
 
-
-##' .. content for \description{} (no empty lines) ..
+##' cor_nucs_using_single_vecs
 ##'
-##' .. content for \details{} ..
-##' @export
-##' @title cor_nucs_using_single_vecs
-##' @param data_list1 
-##' @param data_list2 
-##' @param lengths 
-##' @return correlation
+##' Calculates the pearson correlation between two nucleosome occupancy profiles given their sparse representation.
+##' Same as cor_nucs but uses an older non optimized method, being kept for testing purposis.
+##' @param data_list1 first ff_list of nucleosome positions
+##' @param data_list2 second ff_list of nucleosome positions
+##' @param lengths list of chromosome lengths (names must match subset of the data_list's)
+##' @return correlation pearson correlation between the nucleosome occupancies
 ##' @author Mark Heron
 cor_nucs_using_single_vecs <- function(data_list1, data_list2, lengths) {
   
@@ -436,30 +399,19 @@ cor_nucs_using_single_vecs <- function(data_list1, data_list2, lengths) {
 
 
 
-##' .. content for \description{} (no empty lines) ..
+##' cor_nucs_multiple
 ##'
-##' .. content for \details{} ..
+##' Computes all pairwise pearson correlations between the nucleosome occupancies.
 ##' @export
-##' @title cor_nucs_multiple
-##' @param data_list 
-##' @param lengths 
-##' @return correlation matrix
+##' @param data_list list of ff_list of nucleosome dyad positions
+##' @param lengths list of chromosome lengths (names must match subset of the data_list's)
+##' @return top triangle matrix of the pearson correlations between nucleosome occupancies.
 ##' @author Mark Heron
 cor_nucs_multiple <- function(data_list, lengths) {
   
-  occ_list <- list()
-  for(data_name in names(data_list)) {
-    
-    occ_list[[data_name]] <- convertSparse2occ_ff(data_list[[data_name]][names(lengths)], lengths)
-  }
+  occ_list <- convertSparse2occ_ff_list_list(data_list, lengths)
   
-  cor_matrix <- matrix(0, nrow=length(occ_list), ncol=length(occ_list))
-  for(i in 1:(length(occ_list)-1)) {
-    for(j in (i+1):length(occ_list)) {
-      cor_matrix[i,j] <- cor_ff_list(occ_list[[i]], occ_list[[j]])
-    }
-  }
-  return(cor_matrix)
+  return(cor_ff_list_list(occ_list))
 }
 
 

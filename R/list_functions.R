@@ -7,6 +7,7 @@
 ##' 
 NULL
 
+
 ##' mean_list
 ##'
 ##' calculates the mean of all list elements together
@@ -24,7 +25,6 @@ mean_list <- function(x) {
 
 
 
-
 ##' center_list
 ##'
 ##' centers all list elements by their combined mean
@@ -35,3 +35,18 @@ mean_list <- function(x) {
 center_list <- function(x) {
   return( lapply(x, function(a) a - mean_list(x)) )
 }
+
+
+
+##' scale_list
+##'
+##' scales all list elements by their combined mean
+##' @export
+##' @param x list of numeric vectors
+##' @return scaled x (mean = 1)
+##' @author Mark Heron
+scale_list <- function(x) {
+  return( lapply(x, function(a) a / mean_list(x)) )
+}
+
+

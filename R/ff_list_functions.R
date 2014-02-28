@@ -11,6 +11,25 @@ NULL
 
 
 
+##' hist_ff_list
+##'
+##' Plots a histogram for the values in column for every ff_list element.
+##' @export
+##' @param ff_list list with ff objects
+##' @param column to plot the histogram for
+##' @param ... parameters that can be passed on the hist
+##' @author Mark Heron
+hist_ff_list <- function(ff_list, column, ...) {
+  hist( Reduce(c, lapply(ff_list, function (x) x[,column])), ...)
+  gc()
+}
+
+# hist_ff_list <- function(ff_list, column, ...) {
+#   hist( Reduce(c, lapply(ff_list, function (x) as.ff(x[,column]))), ...)
+#   gc()
+# }
+# use whithin??
+
 
 ##' array_list_to_ff_list
 ##'
@@ -62,6 +81,21 @@ filter_column_range_ff_list <- function(ff_list, column, min, max) {
   return(filtered_ff_list)
 }
 
+
+
+##' convertSparse2occ_ff_list
+##'
+##' Converts sparse representation of dyad positions to nucleosome occupancy as list of ff vectors.
+##' @export
+##' @param sparse list of sparse representation matricies
+##' @param lengths list of chromosome lengths, names must match those of sparse
+##' @return list of ff vectors with genomic occuopancy
+##' @author Mark Heron
+convertSparse2occ_ff_list <- function(sparse, lengths) {
+  
+  occ <- lapply(convertSparse2Complete_ff(sparse, lengths), function (x) smear_ff(x, -73,73))
+  return(occ)
+}
 
 
 
