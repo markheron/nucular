@@ -13,43 +13,6 @@
 NULL
 
 
-library(ff)
-library(ffbase)
-library(pron)
-library(Biostrings)
-
-
-
-
-##' ruler_axis
-##'
-##' Adds an axis that looks like a ruler (with minor ticks without labels).
-##' @export
-##' @param side to add the axis to
-##' @param data to better estimate the start/end of the axis (if not present it uses the plot dimensions)
-##' @author Mark Heron
-ruler_axis <- function(side=1, data=NULL) {
-  
-  axis_p <- c()
-  if(length(data) > 0) {
-    axis_p <- range(data)
-  } else if(side == 1 | side ==3) {
-    axis_p <- par("usr")[1:2]
-  } else {
-    axis_p <- par("usr")[3:4]
-  }
-  
-  p_5 <- pretty(axis_p, 5)
-  axis(side, p_5 , lwd=0,  lwd.tick=1)
-  p_10 <- setdiff(pretty(axis_p, 10, u5.bias=10), pretty(axis_p, 5))
-  if( length(p_10) == 0) {
-    axis(side, setdiff(pretty(axis_p, 25), p_5), labels=FALSE, tcl=-0.2)
-  } else {
-    axis(side, p_10, lwd=0, lwd.tick=1, labels=FALSE, tcl=-0.4)
-    axis(side, setdiff(pretty(axis_p, 50), union(p_10, p_5)), labels=FALSE, tcl=-0.2)
-  }
-}
-
 
 
 ##' convertRaw2Rdata
