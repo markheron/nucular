@@ -13,4 +13,5 @@ Imports:
     ff,
     ffbase,
     Biostrings,
-    pron
+    maRs,
+    pRon

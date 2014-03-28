@@ -17,8 +17,8 @@ NULL
 ##' @author Mark Heron
 mean_list <- function(x) {
   
-  x_sum <- sum(unlist(lapply(x, sum)))
-  x_len <- sum(unlist(lapply(x, length)))
+  x_sum <- sum(unlist(lapply(x, sum, na.rm=TRUE)), na.rm=TRUE)
+  x_len <- sum(unlist(lapply(x, length)), na.rm=TRUE)
   
   return(x_sum/x_len)
 }

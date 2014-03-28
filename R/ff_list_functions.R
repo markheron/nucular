@@ -77,7 +77,7 @@ df_list_to_ffdf_list <- function(df_list) {
 ##' @author Mark Heron
 filter_column_range_ff_list <- function(ff_list, column, min, max) {
   
-  filtered_ff_list <- lapply(ff_list, function (x) x[ (x[,column] >= min) & (x[,column] <= max) ,])
+  filtered_ff_list <- lapply(ff_list, function (x) as.ff(as.matrix(x[ (x[,column] >= min) & (x[,column] <= max) ,])))
   return(filtered_ff_list)
 }
 
@@ -111,9 +111,9 @@ convertSparse2occ_ff_list <- function(sparse, lengths) {
 cov_ff_list <- function(x,y,centered=FALSE) {
   
   if(centered) {
-    return( sum( mapply(function (a,b) sum(a*b) ,x,y)) )
+    return( sum( mapply(function (a,b) sum(a*b, na.rm=TRUE) ,x,y), na.rm=TRUE) )
   } else {
-    return( sum( mapply(function (a,b) sum(a*b) , center_list(x), center_list(y))))
+    return( sum( mapply(function (a,b) sum(a*b, na.rm=TRUE) , center_list(x), center_list(y)), na.rm=TRUE))
   }
 }
 
@@ -130,9 +130,9 @@ cov_ff_list <- function(x,y,centered=FALSE) {
 sd_ff_list <- function(x, centered=FALSE) {
   
   if(centered) {
-    return( sqrt(sum( unlist(lapply( x, function (a) sum(a^2) )) )) )
+    return( sqrt(sum( unlist(lapply( x, function (a) sum(a^2, na.rm=TRUE) )) , na.rm=TRUE)) )
   } else {
-    return( sqrt(sum( unlist(lapply( center_list(x), function (a) sum(a^2) )) )) )
+    return( sqrt(sum( unlist(lapply( center_list(x), function (a) sum(a^2, na.rm=TRUE) )) , na.rm=TRUE)) )
   }  
 }
 
