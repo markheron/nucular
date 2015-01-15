@@ -1,6 +1,8 @@
-##' Utility functions for analysing nucleosome data
+##' nucleosomal nucleotide frequencies Automatic Report
 ##' 
-##' a longer text explaining it
+##' Generates a set of figures for nucleosomal data, showing the fragment length distribution, occupancy, nucleotide frequencies around the mapped ends or dyad positions and correlations between different data sets
+##' 
+##' This package provides basic functions to handle nucleosome data, nuccontrol and nucppp actually do the reporting, so it might need a renaming.
 ##' 
 ##' @name nucular-package
 ##' @author Mark Heron
@@ -8,9 +10,9 @@
 ##' 
 ##' @import ff
 ##' @import ffbase
+##' @import Biostrings
 ##' @import maRs
 ##' @import pRon
-##' @import Biostrings
 NULL
 
 
@@ -64,12 +66,12 @@ plotGenomicCutouts <- function(pos, strand, size, order, genome_folder, chromoso
     
     freqs_chr <- matrix(0, nrow=length(oligo_names(order+1)), size*2+1)
     
-    good <- (1:nrow(pos[[chr]]))[(pos[[chr]][,1] > size & pos[[chr]][,1] < width(fasta_genome[[paste0("chr",chr)]]) - size)]
+    good <- (1:nrow(pos[[chr]]))[(pos[[chr]][,1] > size & pos[[chr]][,1] < length(fasta_genome[[paste0("chr",chr)]]) - size)]
     if(sample > 0) {
       good <- good[1:sample]
     }    
     
-    chr_num <- fasta2num(fasta_genome[[paste0("chr",chr)]], order+1)
+    chr_num <- fasta2num(fasta_genome[paste0("chr",chr)], order+1)
     chr_num[is.na(chr_num)] <- 0
     pos_chr <- pos[[chr]][good,]
     
@@ -157,4 +159,102 @@ cor_nucs_multiple <- function(data_list, lengths) {
 
 
 
+##' get_dyad_pos
+##'
+##' Extracts the dyad positions in the chosen way from a table with mapped fragment start and ends
+##' @export
+##' @param data_list list of mapped fragments for each chromosome
+##' @param dyad_base based on what position should the dyad position be calculated
+##' @param offset offset if the dyad position isn't calculated from the center
+##' @return list of ff matricies with dyad positions and intensity
+##' @author Mark Heron
+get_dyad_pos <- function(data_list, dyad_base="center", offset=73) {
+  
+  dyad_pos <- list()
+  
+  to_ffdf_table <- function (x) {
+    return( as.ffdf(as.data.frame(table(x))) )
+  }
+  
+  for(chr_name in names(data_list)) {
+    
+    if(dyad_base == "center") {
+      tmp <- to_ffdf_table( floor((data_list[[chr_name]][,1] + data_list[[chr_name]][,2])/2) )
+    } else if(dyad_base == "start") {
+      tmp <- to_ffdf_table( data_list[[chr_name]][,1]+offset )
+    } else if(dyad_base == "end") {
+      tmp <- to_ffdf_table( data_list[[chr_name]][,2]-offset )
+    } else if(dyad_base == "dinucleosome") {
+      tmp <- to_ffdf_table( c(data_list[[chr_name]][,1]+offset, data_list[[chr_name]][,2]-offset) )
+    }
+    
+    dyad_pos[[chr_name]] <- as.ff(matrix(c(as.numeric(as.character(tmp[,1])), tmp[,2]), ncol=2))
+  }
+  return(dyad_pos)
+}
 
+
+
+##' adjust_X_chr
+##'
+##' Adjusts lower X chromosome counts due cells being male or a mixture of male/female.
+##' @export
+##' @param ff_list list of ff objects each representing data of one chromosome
+##' @param X_chr name of the X chromosome in ff_list
+##' @param Xfactor factor by which the counts should be adjusted (2 for male celllines, 4/3 for male/female mixtures)
+##' @return adjusted ff_list
+##' @author Mark Heron
+adjust_X_chr <- function(ff_list, X_chr, Xfactor) {
+  
+  ff_list[[X_chr]][,2] <- ff_list[[X_chr]][,2]*Xfactor
+  return(ff_list)
+}
+
+
+
+##' mask_repeats
+##'
+##' Masks repeat regions read in from repeatMasker output files.
+##' @export
+##' @param occ_single (list of ff vectors) each ff representing one chromosome
+##' @param mask_file_folder (character) name of the folder where the repeatMasker files for each chromosome can be found
+##' @param repeats_to_mask (character vector) of types of repeats to mask
+##' @param nuc_half_width (integer) amount to additionally mask to the left and right of the repeat
+##' @return the masked occupancy ff vector list
+##' @author Mark Heron
+mask_repeats <- function(occ_single, mask_file_folder, repeats_to_mask, nuc_half_width=73) {
+  
+  occ_masked <- list()
+  
+  for(chr in names(occ_single)) {
+    col_classes <- c(rep("NULL", 6), "integer", "integer", "NULL", rep("factor",3), rep("NULL", 5))
+    
+    repeats <- read.table(paste0(mask_file_folder,"/chr", chr, "_rmsk.txt"), header=FALSE, colClasses=col_classes)
+    
+    repeats <- repeats[ repeats[,5] %in% repeats_to_mask,] 
+    
+    repeats[,1] <- pmax(1, repeats[,1]-nuc_half_width)
+    repeats[,2] <- pmin(length(occ_single[[chr]]), repeats[,2]+nuc_half_width)
+    
+    occ_masked[[chr]] <- clone(occ_single[[chr]], pattern="ff")
+    for(i in 1:nrow(repeats)) {
+      occ_masked[[chr]][repeats[i,1]:repeats[i,2]] <- NA
+    }
+    
+  }
+  return(occ_masked)
+}
+
+
+##' uniquify_ff_list
+##'
+##' Removes duplicate fragments in a list of ff objects representing all reads for a chromosome.
+##' @export
+##' @param ff_list list of ff matrices each representing data of one chromosome
+##' @return demultiplexed 
+##' @author Mark Heron
+##' @importFrom plyr count
+uniquify_ff_list <- function(ff_list) {
+  uniquified_ff_list <- lapply(ff_list, function(x) as.ff(as.matrix( count(x)[, 1:3])))
+  return(uniquified_ff_list)
+}

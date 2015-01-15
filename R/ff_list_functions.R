@@ -7,6 +7,7 @@
 ##' 
 ##' @import ff
 ##' @import ffbase
+##' @import maRs
 NULL
 
 
@@ -77,10 +78,16 @@ df_list_to_ffdf_list <- function(df_list) {
 ##' @author Mark Heron
 filter_column_range_ff_list <- function(ff_list, column, min, max) {
   
-  filtered_ff_list <- lapply(ff_list, function (x) as.ff(as.matrix(x[ (x[,column] >= min) & (x[,column] <= max) ,])))
+  filtered_ff_list <- lapply(ff_list, function (x) {
+    tmp <- (x[,column] >= min) & (x[,column] <= max)
+    if(sum(tmp) > 0) {
+      as.ff(as.matrix(x[tmp ,]))
+    } else {
+      as.ram(x)[0,] # slight hack since ff objects can't be empty
+    }
+  } )
   return(filtered_ff_list)
 }
-
 
 
 ##' convertSparse2occ_ff_list
@@ -151,4 +158,30 @@ cor_ff_list <- function(x,y) {
   centered_x = center_list(x)
   centered_y = center_list(y)
   return( cov_ff_list(centered_x, centered_y, centered=TRUE) / (sd_ff_list(centered_x, centered=TRUE)*sd_ff_list(centered_y, centered=TRUE)) )  
+}
+
+
+
+##' center_ff_list
+##'
+##' centers all list elements by their combined mean
+##' @export
+##' @param x list of ff_vectors
+##' @return centered x (mean = 0)
+##' @author Mark Heron
+center_ff_list <- function(x) {
+  return( lapply(x, function(a) a - as.ff(rep(mean_list(x), length(a))) ))
+}
+
+
+
+##' scale_ff_list
+##'
+##' scales all list elements by their combined mean
+##' @export
+##' @param x list of ff_vectors
+##' @return scaled x (mean = 1)
+##' @author Mark Heron
+scale_ff_list <- function(x) {
+  return( lapply(x, function(a) a / as.ff(rep(mean_list(x), length(a))) ))
 }

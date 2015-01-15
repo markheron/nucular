@@ -23,9 +23,9 @@ NULL
 cov_ff <- function(x,y,centered=FALSE) {
   
   if(centered) {
-    return( sum( x*y ) )
+    return( sum( x*y , na.rm=TRUE) )
   } else {
-    return( sum( (x- mean(x, na.rm=TRUE))*(y-mean(y, na.rm=TRUE)) ) )
+    return( sum( (x- mean(x, na.rm=TRUE))*(y-mean(y, na.rm=TRUE)) ,na.rm=TRUE) )
   }
 }
 
@@ -42,9 +42,9 @@ cov_ff <- function(x,y,centered=FALSE) {
 sd_ff <- function(x, centered=FALSE) {
   
   if(centered) {
-    return( sqrt(sum( x^2 ) ) )
+    return( sqrt(sum( x^2 , na.rm=TRUE) ) )
   } else {
-    return( sqrt(sum( (x-mean(x, na.rm=TRUE))^2 )) )
+    return( sqrt(sum( (x-mean(x, na.rm=TRUE))^2 ,na.rm=TRUE)) )
   }  
 }
 

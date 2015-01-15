@@ -15,10 +15,10 @@ NULL
 ##' @param x list of numeric vectors
 ##' @return mean of the list
 ##' @author Mark Heron
-mean_list <- function(x) {
+mean_list <- function(x, na.rm=TRUE) {
   
-  x_sum <- sum(unlist(lapply(x, sum, na.rm=TRUE)), na.rm=TRUE)
-  x_len <- sum(unlist(lapply(x, length)), na.rm=TRUE)
+  x_sum <- sum(unlist(lapply(x, sum, na.rm=na.rm)), na.rm=na.rm)
+  x_len <- sum(unlist(lapply(x, function(tmp) length(na.omit(tmp)))), na.rm=na.rm)
   
   return(x_sum/x_len)
 }
