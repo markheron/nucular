@@ -48,7 +48,7 @@ convertRaw2Rdata <- function(name, folder="", extension=".tabular") {
 ##' Create oligonucleotide frequency profile figure from genome positions
 ##' @export
 ##' @param pos ff_list of the nucleosome fragments
-##' @param strand information at the moment ignored
+##' @param strand list of "+"/"-" vectors
 ##' @param size in either direction of the dyad position for which to count and plot the oligo frequencies
 ##' @param order of the oligonucleotides
 ##' @param genome_folder where to find the genome fasta files
@@ -57,6 +57,8 @@ convertRaw2Rdata <- function(name, folder="", extension=".tabular") {
 ##' @return olinucleotide frequency matrix, rows are the oligonucleotides, cols the positions around the dyad
 ##' @author Mark Heron
 plotGenomicCutouts <- function(pos, strand, size, order, genome_folder, chromosomes, sample=0) {
+    
+  comp_oli_pos <- complementary_oligo_positions(order+1)
   
   fasta_genome <- read_genome_fasta(genome_folder)
   
@@ -66,7 +68,7 @@ plotGenomicCutouts <- function(pos, strand, size, order, genome_folder, chromoso
     
     freqs_chr <- matrix(0, nrow=length(oligo_names(order+1)), size*2+1)
     
-    good <- (1:nrow(pos[[chr]]))[(pos[[chr]][,1] > size & pos[[chr]][,1] < length(fasta_genome[[paste0("chr",chr)]]) - size)]
+    good <- (1:nrow(pos[[chr]]))[( pos[[chr]][,1] > size+order & pos[[chr]][,1] < length(fasta_genome[[paste0("chr",chr)]]) - size )]
     if(sample > 0) {
       good <- good[1:sample]
     }    
@@ -75,11 +77,20 @@ plotGenomicCutouts <- function(pos, strand, size, order, genome_folder, chromoso
     chr_num[is.na(chr_num)] <- 0
     pos_chr <- pos[[chr]][good,]
     
+    if(setequal(names(stran), names(pos))) {
+      strand_chr <- strand[[chr]][good,]
+    } else {
+      strand_chr <- "+"
+    }
+    
     for(i in 1:nrow(freqs_chr)) {
       
       chr_bool <- chr_num == i
       for(j in 1:ncol(freqs_chr)) {
-        freqs_chr[i,j] <- sum( chr_bool[pos_chr[,1]-size+j] * pos_chr[,2])
+        # plus strand
+        freqs_chr[i,j] <- freqs_chr[i,j] + sum( chr_bool[pos_chr[strand_chr=="+",1]-size+j] * pos_chr[strand_chr=="+",2])
+        # minus strand
+        freqs_chr[comp_oli_pos[i],j] <- freqs_chr[comp_oli_pos[i],j] + sum( chr_bool[pos_chr[strand_chr=="-",1]+size-j-order] * pos_chr[strand_chr=="-",2])
       }        
     }
     
@@ -199,9 +210,9 @@ get_dyad_pos <- function(data_list, dyad_base="center", offset=73) {
 ##'
 ##' Adjusts lower X chromosome counts due cells being male or a mixture of male/female.
 ##' @export
-##' @param ff_list list of ff objects each representing data of one chromosome
+##' @param ff_list list of ff objects each representing data of one chromosome. IMPORTANT: the data in this list will be changed!
 ##' @param X_chr name of the X chromosome in ff_list
-##' @param Xfactor factor by which the counts should be adjusted (2 for male celllines, 4/3 for male/female mixtures)
+##' @param Xfactor factor by which the counts should be adjusted (2 for male cell lines, 4/3 for male/female mixtures (embryo's or unspecific adult flies))
 ##' @return adjusted ff_list
 ##' @author Mark Heron
 adjust_X_chr <- function(ff_list, X_chr, Xfactor) {
