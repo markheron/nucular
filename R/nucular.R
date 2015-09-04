@@ -51,16 +51,23 @@ convertRaw2Rdata <- function(name, folder="", extension=".tabular") {
 ##' @param strand list of "+"/"-" vectors
 ##' @param size in either direction of the dyad position for which to count and plot the oligo frequencies
 ##' @param order of the oligonucleotides
-##' @param genome_folder where to find the genome fasta files
-##' @param chromosomes which chromosomes to use (must be contained in both genome_folder and pos)
+##' @param genome character string of the folder where the genome fasta files are located, or a DNAStringSet of the genome
+##' @param chromosomes which chromosomes to use (must be contained in both genome and pos)
 ##' @param sample if >0 only use the first sample positions per chromosome
 ##' @return olinucleotide frequency matrix, rows are the oligonucleotides, cols the positions around the dyad
 ##' @author Mark Heron
-plotGenomicCutouts <- function(pos, strand, size, order, genome_folder, chromosomes, sample=0) {
+plotGenomicCutouts <- function(pos, strand, size, order, genome, chromosomes, sample=0) {
     
   comp_oli_pos <- complementary_oligo_positions(order+1)
   
-  fasta_genome <- read_genome_fasta(genome_folder)
+  if( is.character(genome)) {
+    fasta_genome <- read_genome_fasta(genome)
+    names(fasta_genome) <- sub("chr", "", names(fasta_genome))
+  } else if (class(genome) == "DNAStringSet"){
+    fasta_genome <- genome
+  } else {
+    stop("genome is neither a string nor a DNAStringSet !")
+  }
   
   freqs <- matrix(0, nrow=length(oligo_names(order+1)), size*2+1)
   
@@ -68,16 +75,16 @@ plotGenomicCutouts <- function(pos, strand, size, order, genome_folder, chromoso
     
     freqs_chr <- matrix(0, nrow=length(oligo_names(order+1)), size*2+1)
     
-    good <- (1:nrow(pos[[chr]]))[( pos[[chr]][,1] > size+order & pos[[chr]][,1] < length(fasta_genome[[paste0("chr",chr)]]) - size )]
+    good <- (1:nrow(pos[[chr]]))[( pos[[chr]][,1] > size+order & pos[[chr]][,1] < length(fasta_genome[[chr]]) - size )]
     if(sample > 0) {
       good <- good[1:sample]
     }    
     
-    chr_num <- fasta2num(fasta_genome[paste0("chr",chr)], order+1)
+    chr_num <- fasta2num(fasta_genome[chr], order+1, method="memoryLimited")
     chr_num[is.na(chr_num)] <- 0
     pos_chr <- pos[[chr]][good,]
     
-    if(setequal(names(stran), names(pos))) {
+    if(setequal(names(strand), names(pos))) {
       strand_chr <- strand[[chr]][good,]
     } else {
       strand_chr <- "+"
@@ -90,7 +97,9 @@ plotGenomicCutouts <- function(pos, strand, size, order, genome_folder, chromoso
         # plus strand
         freqs_chr[i,j] <- freqs_chr[i,j] + sum( chr_bool[pos_chr[strand_chr=="+",1]-size+j] * pos_chr[strand_chr=="+",2])
         # minus strand
-        freqs_chr[comp_oli_pos[i],j] <- freqs_chr[comp_oli_pos[i],j] + sum( chr_bool[pos_chr[strand_chr=="-",1]+size-j-order] * pos_chr[strand_chr=="-",2])
+        if( any(strand_chr=="-") ) {
+          freqs_chr[comp_oli_pos[i],j] <- freqs_chr[comp_oli_pos[i],j] + sum( chr_bool[pos_chr[strand_chr=="-",1]+size-j-order] * pos_chr[strand_chr=="-",2])
+        }
       }        
     }
     
@@ -189,7 +198,7 @@ get_dyad_pos <- function(data_list, dyad_base="center", offset=73) {
   
   for(chr_name in names(data_list)) {
     
-    if(dyad_base == "center") {
+    if(dyad_base == "center" | dyad_base == "center") {
       tmp <- to_ffdf_table( floor((data_list[[chr_name]][,1] + data_list[[chr_name]][,2])/2) )
     } else if(dyad_base == "start") {
       tmp <- to_ffdf_table( data_list[[chr_name]][,1]+offset )
