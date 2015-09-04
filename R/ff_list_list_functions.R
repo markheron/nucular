@@ -14,7 +14,7 @@ NULL
 ##' Computes the pairwise correlations between the list elements and saves them in a matrix
 ##' @export
 ##' @param data_list of the ff_list objects to compute the correlations between.
-##' @return centered x (mean = 0)
+##' @return correlation matrix
 ##' @author Mark Heron
 cor_ff_list_list <- function(data_list) {
   
@@ -28,6 +28,28 @@ cor_ff_list_list <- function(data_list) {
   
   colnames(cor_matrix) <- names(data_list)
   rownames(cor_matrix) <- names(data_list)
+  return(cor_matrix)
+}
+
+##' cor_ff_list_list_vs_ff_list_list
+##'
+##' Computes the pairwise correlations between the list elements of two different lists and saves them in a matrix
+##' @export
+##' @param first_list of the ff_list objects to compute the correlations from.
+##' @param second_list of the ff_list objects to compute the correlations to.
+##' @return correlation matrix
+##' @author Mark Heron
+cor_ff_list_list_vs_ff_list_list <- function(first_list, second_list) {
+  
+  cor_matrix <- matrix(0, nrow=length(first_list), ncol=length(second_list))
+  for(i in 1:(length(first_list))) {
+    for(j in 1:length(second_list)) {
+      cor_matrix[i,j] <- cor_ff_list(first_list[[i]], second_list[[j]])
+    }
+  }
+  
+  colnames(cor_matrix) <- names(second_list)
+  rownames(cor_matrix) <- names(first_list)
   return(cor_matrix)
 }
 
