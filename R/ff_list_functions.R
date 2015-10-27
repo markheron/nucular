@@ -199,7 +199,7 @@ scale_ff_list <- function(x) {
 ##' @author Mark Heron
 likelihood_ff_list <- function(predictions, measurements) {
   
-  return( sum( unlist(lapply( mapply( '*', log(scale_ff_list(predictions)), scale_ff_list(measurements)) , sum, na.rm=TRUE)), na.rm=TRUE))
+  return( sum( unlist(lapply( mapply( '*', log(scale_ff_list(predictions)), scale_ff_list(measurements), SIMPLIFY=FALSE) , sum, na.rm=TRUE)), na.rm=TRUE))
 }
 
 
@@ -216,7 +216,7 @@ mae_ff_list <- function(predictions, measurements) {
   prob_pred <- make_prob_ff_list(predictions)
   prob_meas <- make_prob_ff_list(measurements)
   
-  return( mean_list( mapply( '-', prob_pred, prob_meas) ) )
+  return( mean_list( mapply( '-', prob_pred, prob_meas, SIMPLIFY=FALSE) ) )
 }
 
 
@@ -226,7 +226,7 @@ rmse_ff_list <- function(predictions, measurements) {
   prob_pred <- make_prob_ff_list(predictions)
   prob_meas <- make_prob_ff_list(measurements)
   
-  return( sqrt( mean_list( mapply( function (a,b) {(a-b)^2} , prob_pred, prob_meas) ) ) )
+  return( sqrt( mean_list( mapply( function (a,b) {(a-b)^2} , prob_pred, prob_meas, SIMPLIFY=FALSE) ) ) )
 }
 
 
