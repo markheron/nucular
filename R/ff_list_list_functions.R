@@ -9,6 +9,24 @@
 ##' @import ffbase
 NULL
 
+
+##' @export
+compare_ff_list_list <- function(data_list, comparison_function) {
+  
+  result_matrix <- matrix(0, nrow=length(data_list), ncol=length(data_list))
+  for(i in seq_along(data_list)) {
+    for(j in (i+1):length(data_list)) {
+      result_matrix[i,j] <- comparison_function(data_list[[i]], data_list[[j]])
+    }
+  }
+  result_matrix <- result_matrix + t(result_matrix) + diag(1,length(data_list))
+  
+  colnames(result_matrix) <- names(data_list)
+  rownames(result_matrix) <- names(data_list)
+  return(result_matrix)
+}
+
+
 ##' cor_ff_list_list
 ##'
 ##' Computes the pairwise correlations between the list elements and saves them in a matrix
@@ -18,18 +36,25 @@ NULL
 ##' @author Mark Heron
 cor_ff_list_list <- function(data_list) {
   
-  cor_matrix <- matrix(0, nrow=length(data_list), ncol=length(data_list))
-  for(i in 1:(length(data_list)-1)) {
-    for(j in (i+1):length(data_list)) {
-      cor_matrix[i,j] <- cor_ff_list(data_list[[i]], data_list[[j]])
+  return( compare_ff_list_list(data_list, cor_ff_list) )
+}
+
+
+##' @export
+compare_ff_list_list_vs_ff_list_list <- function(first_list, second_list, comparison_function) {
+  
+  result_matrix <- matrix(0, nrow=length(first_list), ncol=length(second_list))
+  for(i in 1:(length(first_list))) {
+    for(j in 1:length(second_list)) {
+      result_matrix[i,j] <- comparison_function(first_list[[i]], second_list[[j]])
     }
   }
-  cor_matrix <- cor_matrix + t(cor_matrix) + diag(1,length(data_list))
   
-  colnames(cor_matrix) <- names(data_list)
-  rownames(cor_matrix) <- names(data_list)
-  return(cor_matrix)
+  colnames(result_matrix) <- names(second_list)
+  rownames(result_matrix) <- names(first_list)
+  return(result_matrix)
 }
+
 
 ##' cor_ff_list_list_vs_ff_list_list
 ##'
@@ -41,17 +66,24 @@ cor_ff_list_list <- function(data_list) {
 ##' @author Mark Heron
 cor_ff_list_list_vs_ff_list_list <- function(first_list, second_list) {
   
-  cor_matrix <- matrix(0, nrow=length(first_list), ncol=length(second_list))
-  for(i in 1:(length(first_list))) {
-    for(j in 1:length(second_list)) {
-      cor_matrix[i,j] <- cor_ff_list(first_list[[i]], second_list[[j]])
-    }
-  }
+  return(compare_ff_list_list_vs_ff_list_list(first_list, second_list, cor_ff_list))
   
-  colnames(cor_matrix) <- names(second_list)
-  rownames(cor_matrix) <- names(first_list)
-  return(cor_matrix)
 }
+
+
+##' likelihood_ff_list_list_vs_ff_list_list
+##'
+##' Computes the pairwise likelihood between the list elements of two different lists and saves them in a matrix
+##' @export
+##' @param first_list of the ff_list objects
+##' @param second_list of the ff_list objects
+##' @return likelihood matrix
+##' @author Mark Heron
+likelihood_ff_list_list_vs_ff_list_list <- function(first_list, second_list) {
+  
+  return(compare_ff_list_list_vs_ff_list_list(first_list, second_list, likelihood_ff_list))
+}
+
 
 
 ##' convertSparse2occ_ff_list_list

@@ -8,6 +8,8 @@ mean_list(x, na.rm = TRUE)
 }
 \arguments{
 \item{x}{list of numeric vectors}
+
+\item{na.rm}{should NA values be ignored (see sum)}
 }
 \value{
 mean of the list

@@ -8,17 +8,33 @@
 NULL
 
 
+##' sum_list
+##'
+##' calculates the sum of all list elements together
+##' @export
+##' @param x list of numeric vectors
+##' @param na.rm should NA values be ignored (see sum)
+##' @return sum of the list
+##' @author Mark Heron
+sum_list <- function(x, na.rm=TRUE) {
+  
+  sum <- sum(unlist(lapply(x, sum, na.rm=na.rm)), na.rm=na.rm)
+  
+  return(sum)
+}
+
 ##' mean_list
 ##'
 ##' calculates the mean of all list elements together
 ##' @export
 ##' @param x list of numeric vectors
+##' @param na.rm should NA values be ignored (see sum)
 ##' @return mean of the list
 ##' @author Mark Heron
 mean_list <- function(x, na.rm=TRUE) {
   
-  x_sum <- sum(unlist(lapply(x, sum, na.rm=na.rm)), na.rm=na.rm)
-  x_len <- sum(unlist(lapply(x, function(tmp) length(na.omit(tmp)))), na.rm=na.rm)
+  x_sum <- sum_list(x, na.rm=na.rm)
+  x_len <- sum(unlist(lapply(x, function(tmp) length(if(na.rm) {na.omit(tmp)} else {tmp} ))), na.rm=na.rm)
   
   return(x_sum/x_len)
 }

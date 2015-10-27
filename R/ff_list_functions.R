@@ -147,7 +147,7 @@ sd_ff_list <- function(x, centered=FALSE) {
 
 ##' cor_ff_list
 ##' 
-##' Computes the correlation between two vectors.
+##' Computes the correlation between two lists of ff vectors.
 ##' @export
 ##' @param x a list of ff vectors
 ##' @param y a second list of ff vectors
@@ -155,8 +155,10 @@ sd_ff_list <- function(x, centered=FALSE) {
 ##' @author Mark Heron
 cor_ff_list <- function(x,y) {
   
-  centered_x = center_list(x)
-  centered_y = center_list(y)
+  not_na_pos <- mapply( function (a,b) !( is.na(a) | is.na(b) ), x, y, SIMPLIFY=FALSE)
+  
+  centered_x = center_list(mapply('[', x, not_na_pos, SIMPLIFY=FALSE))
+  centered_y = center_list(mapply('[', y, not_na_pos, SIMPLIFY=FALSE))
   return( cov_ff_list(centered_x, centered_y, centered=TRUE) / (sd_ff_list(centered_x, centered=TRUE)*sd_ff_list(centered_y, centered=TRUE)) )  
 }
 
@@ -185,3 +187,61 @@ center_ff_list <- function(x) {
 scale_ff_list <- function(x) {
   return( lapply(x, function(a) a / as.ff(rep(mean_list(x), length(a))) ))
 }
+
+
+##' likelihood_ff_list
+##' 
+##' Computes a simple likelihood of a list of prediction vectors given a matching list of measurement vectors.
+##' @export
+##' @param predictions a list of ff vectors
+##' @param measurements a second list of ff vectors
+##' @return likelihood
+##' @author Mark Heron
+likelihood_ff_list <- function(predictions, measurements) {
+  
+  return( sum( unlist(lapply( mapply( '*', log(scale_ff_list(predictions)), scale_ff_list(measurements)) , sum, na.rm=TRUE)), na.rm=TRUE))
+}
+
+
+
+
+make_prob_ff_list <- function(x) {
+  return( lapply(x, function(a) a / as.ff(rep(sum_list(x), length(a))) ))
+}
+
+
+##' @export
+mae_ff_list <- function(predictions, measurements) {
+  
+  prob_pred <- make_prob_ff_list(predictions)
+  prob_meas <- make_prob_ff_list(measurements)
+  
+  return( mean_list( mapply( '-', prob_pred, prob_meas) ) )
+}
+
+
+##' @export
+rmse_ff_list <- function(predictions, measurements) {
+  
+  prob_pred <- make_prob_ff_list(predictions)
+  prob_meas <- make_prob_ff_list(measurements)
+  
+  return( sqrt( mean_list( mapply( function (a,b) {(a-b)^2} , prob_pred, prob_meas) ) ) )
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

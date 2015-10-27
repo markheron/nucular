@@ -15,7 +15,7 @@ cor_ff_list(x, y)
 pearson correlation between x and y
 }
 \description{
-Computes the correlation between two vectors.
+Computes the correlation between two lists of ff vectors.
 }
 \author{
 Mark Heron
