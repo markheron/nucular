@@ -189,6 +189,21 @@ scale_ff_list <- function(x) {
 }
 
 
+
+##' make_prob_ff_list
+##'
+##' scales all list elements so their sum is 1, i.e. ig there are no negative values they can be used as a probability
+##' @param x list of ff_vectors
+##' @return probability version of x (sum = 1)
+##' @author Mark Heron
+make_prob_ff_list <- function(x) {
+  
+  x_sum <- sum_list(x)
+  return( lapply(x, function(a) a / as.ff(rep( x_sum, length(a))) ))
+}
+
+
+
 ##' likelihood_ff_list
 ##' 
 ##' Computes a simple likelihood of a list of prediction vectors given a matching list of measurement vectors.
@@ -199,28 +214,44 @@ scale_ff_list <- function(x) {
 ##' @author Mark Heron
 likelihood_ff_list <- function(predictions, measurements) {
   
-  return( sum( unlist(lapply( mapply( '*', log(scale_ff_list(predictions)), scale_ff_list(measurements), SIMPLIFY=FALSE) , sum, na.rm=TRUE)), na.rm=TRUE))
+  # replace zero predictions with minimum predictions, so that the likelihood isn't -Inf because of them
+  tmp_pred <- list()
+  for(i in names(predictions)) {
+    tmp_pred[[i]] <- clone.ff(predictions[[i]])
+    if( sum(tmp_pred[[i]] == 0, na.rm=TRUE) > 0) {
+      tmp_pred[[i]][ (tmp_pred[[i]] == 0) & !(is.na(tmp_pred[[i]])) ] <- as.ff(rep(min(tmp_pred[[i]][tmp_pred[[i]] > 0]), sum(tmp_pred[[i]] == 0, na.rm=TRUE)))
+    }
+  }
+  
+  return( sum( unlist(lapply( mapply( '*', lapply(make_prob_ff_list(tmp_pred), log), make_prob_ff_list(measurements), SIMPLIFY=FALSE) , sum, na.rm=TRUE)), na.rm=TRUE))
 }
 
 
 
-
-make_prob_ff_list <- function(x) {
-  return( lapply(x, function(a) a / as.ff(rep(sum_list(x), length(a))) ))
-}
-
-
+##' mae_ff_list
+##' 
+##' Computes the mean absolute error between two ff_lists.
 ##' @export
+##' @param predictions a list of ff vectors
+##' @param measurements a second list of ff vectors
+##' @return mean absolute error
 mae_ff_list <- function(predictions, measurements) {
   
   prob_pred <- make_prob_ff_list(predictions)
   prob_meas <- make_prob_ff_list(measurements)
   
-  return( mean_list( mapply( '-', prob_pred, prob_meas, SIMPLIFY=FALSE) ) )
+  return( mean_list( lapply( mapply( '-', prob_pred, prob_meas, SIMPLIFY=FALSE), abs) ) )
 }
 
 
+
+##' rmse_ff_list
+##' 
+##' Computes the root mean square error between two ff_lists.
 ##' @export
+##' @param predictions a list of ff vectors
+##' @param measurements a second list of ff vectors
+##' @return root mean square error
 rmse_ff_list <- function(predictions, measurements) {
   
   prob_pred <- make_prob_ff_list(predictions)

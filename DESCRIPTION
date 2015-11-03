@@ -7,7 +7,7 @@ Author: Mark Heron
 Maintainer: Maintainer: Mark Heron <you@shouldknow.me>
 Description: Generates a set of figures for nucleosomal data, showing the
     fragment length distribution, occupancy, nucleotide frequencies around the
-    mapped ends or dyad positions and correlations between different data sets
+    mapped ends or dyad positions and correlations between different data sets.
 License: GPL-3
 Imports:
     ff,

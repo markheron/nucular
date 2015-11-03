@@ -10,7 +10,14 @@
 NULL
 
 
+##' compare_ff_list_list
+##'
+##' Applies a comparison function pairwise between all data_list elements and saves the results in a matrix
 ##' @export
+##' @param data_list of the ff_list objects to compare
+##' @param comparison_function comparison function to use, e.g. cor_ff_list
+##' @return comparison matrix
+##' @author Mark Heron
 compare_ff_list_list <- function(data_list, comparison_function) {
   
   result_matrix <- matrix(0, nrow=length(data_list), ncol=length(data_list))
@@ -27,6 +34,7 @@ compare_ff_list_list <- function(data_list, comparison_function) {
 }
 
 
+
 ##' cor_ff_list_list
 ##'
 ##' Computes the pairwise correlations between the list elements and saves them in a matrix
@@ -40,7 +48,16 @@ cor_ff_list_list <- function(data_list) {
 }
 
 
+
+##' compare_ff_list_list_vs_ff_list_list
+##'
+##' Applies a comparison function pairwise between the list elements of two different lists and saves the results in a matrix
 ##' @export
+##' @param first_list of the ff_list objects to compute the correlations from.
+##' @param second_list of the ff_list objects to compute the correlations to.
+##' @param comparison_function comparison function to use, e.g. cor_ff_list
+##' @return comparison matrix
+##' @author Mark Heron
 compare_ff_list_list_vs_ff_list_list <- function(first_list, second_list, comparison_function) {
   
   result_matrix <- matrix(0, nrow=length(first_list), ncol=length(second_list))
@@ -54,6 +71,7 @@ compare_ff_list_list_vs_ff_list_list <- function(first_list, second_list, compar
   rownames(result_matrix) <- names(first_list)
   return(result_matrix)
 }
+
 
 
 ##' cor_ff_list_list_vs_ff_list_list
