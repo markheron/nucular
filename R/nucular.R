@@ -266,6 +266,28 @@ mask_repeats <- function(occ_single, mask_file_folder, repeats_to_mask, nuc_half
 }
 
 
+
+##' mask_Ns_in_ff_list
+##'
+##' Masks an ff_list based on N's in the genomic sequence.
+##' @export
+##' @param ff_list to be masked
+##' @param genome_fasta DNAStringSet of the genomic sequence
+##' @return masked ff_list (cloned so the original isn't changed)
+mask_Ns_in_ff_list <- function(ff_list, genome_fasta) {
+  
+  masked_ff_list <- list()
+  for(name in names(ff_list)) {
+    masked_ff_list[[name]] <- clone(ff_list[[name]])
+    
+    fasta_num <- fasta2num(genome_fasta[name], 1)
+    masked_ff_list[[name]][is.na(fasta_num)] <- NA
+  }
+  return(masked_ff_list)
+}
+
+
+
 ##' uniquify_ff_list
 ##'
 ##' Removes duplicate fragments in a list of ff objects representing all reads for a chromosome.
