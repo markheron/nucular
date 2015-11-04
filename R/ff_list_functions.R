@@ -199,7 +199,7 @@ scale_ff_list <- function(x) {
 make_prob_ff_list <- function(x) {
   
   x_sum <- sum_list(x)
-  return( lapply(x, function(a) a /  x_sum, length(a) ))
+  return( lapply(x, function(a) a / x_sum ))
 }
 
 
