@@ -172,7 +172,7 @@ cor_ff_list <- function(x,y) {
 ##' @return centered x (mean = 0)
 ##' @author Mark Heron
 center_ff_list <- function(x) {
-  return( lapply(x, function(a) a - as.ff(rep(mean_list(x), length(a))) ))
+  return( lapply(x, function(a) a - mean_list(x) ))
 }
 
 
@@ -185,7 +185,7 @@ center_ff_list <- function(x) {
 ##' @return scaled x (mean = 1)
 ##' @author Mark Heron
 scale_ff_list <- function(x) {
-  return( lapply(x, function(a) a / as.ff(rep(mean_list(x), length(a))) ))
+  return( lapply(x, function(a) a / mean_list(x) ))
 }
 
 
@@ -199,7 +199,7 @@ scale_ff_list <- function(x) {
 make_prob_ff_list <- function(x) {
   
   x_sum <- sum_list(x)
-  return( lapply(x, function(a) a / as.ff(rep( x_sum, length(a))) ))
+  return( lapply(x, function(a) a /  x_sum, length(a) ))
 }
 
 
@@ -260,6 +260,21 @@ rmse_ff_list <- function(predictions, measurements) {
   return( sqrt( mean_list( mapply( function (a,b) {(a-b)^2} , prob_pred, prob_meas, SIMPLIFY=FALSE) ) ) )
 }
 
+
+
+
+#' intra_scaling_ff_list
+#'
+#' Scales each ff_vector in the list to average 1.
+#' Simple wrapper for lapply '/' mean
+#' @param ff_list where each vector should be scaled individually
+#' @return intra scaled ff_list
+#' @export
+#'
+intra_scaling_ff_list <- function(ff_list) {
+  
+  return(lapply(ff_list, function (x) x/mean(x, na.rm=TRUE)))
+}
 
 
 
