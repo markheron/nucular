@@ -28,6 +28,8 @@ NULL
 ##' @author Mark Heron
 convertRaw2Rdata <- function(name, folder="", extension=".tabular") {
   
+  warning("convertRaw2Rdata assumes the data has a 1-based genome index, not 0-based!")
+  
   raw_table <- read.table.ffdf(file=paste0(folder,name,extension), sep="\t", comment.char="", header=FALSE, col.names=c("chr", "start", "stop", "length", NA), colClasses=c("factor", "integer", "integer", "integer","NULL"))
   
   chr_list_table <- list()
@@ -95,10 +97,10 @@ plotGenomicCutouts <- function(pos, strand, size, order, genome, chromosomes, sa
       chr_bool <- chr_num == i
       for(j in 1:ncol(freqs_chr)) {
         # plus strand
-        freqs_chr[i,j] <- freqs_chr[i,j] + sum( chr_bool[pos_chr[strand_chr=="+",1]-size+j] * pos_chr[strand_chr=="+",2])
+        freqs_chr[i,j] <- freqs_chr[i,j] + sum( chr_bool[pos_chr[strand_chr=="+",1]-(size+1)+j] * pos_chr[strand_chr=="+",2])
         # minus strand
         if( any(strand_chr=="-") ) {
-          freqs_chr[comp_oli_pos[i],j] <- freqs_chr[comp_oli_pos[i],j] + sum( chr_bool[pos_chr[strand_chr=="-",1]+size-j-order] * pos_chr[strand_chr=="-",2])
+          freqs_chr[comp_oli_pos[i],j] <- freqs_chr[comp_oli_pos[i],j] + sum( chr_bool[pos_chr[strand_chr=="-",1]+(size+1)-j-order] * pos_chr[strand_chr=="-",2])
         }
       }        
     }

@@ -23,7 +23,13 @@ compare_ff_list_list <- function(data_list, comparison_function) {
   result_matrix <- matrix(0, nrow=length(data_list), ncol=length(data_list))
   for(i in seq_along(data_list)) {
     for(j in (i+1):length(data_list)) {
-      result_matrix[i,j] <- comparison_function(data_list[[i]], data_list[[j]])
+      
+      common_elements <- intersect(names(data_list[[i]]), names(data_list[[j]]))
+      result_matrix[i,j] <- comparison_function(data_list[[i]][common_elements], data_list[[j]][common_elements])
+      
+      if(length(common_elements) < max(length(data_list[[i]]),length(data_list[[j]])) ) {
+        warning("Elements of two list don't match!")
+      }
     }
   }
   result_matrix <- result_matrix + t(result_matrix) + diag(1,length(data_list))
@@ -63,7 +69,12 @@ compare_ff_list_list_vs_ff_list_list <- function(first_list, second_list, compar
   result_matrix <- matrix(0, nrow=length(first_list), ncol=length(second_list))
   for(i in 1:(length(first_list))) {
     for(j in 1:length(second_list)) {
-      result_matrix[i,j] <- comparison_function(first_list[[i]], second_list[[j]])
+      common_elements <- intersect(names(first_list[[i]]), names(second_list[[j]]))
+      result_matrix[i,j] <- comparison_function(first_list[[i]][common_elements], second_list[[j]][common_elements])
+      
+      if(length(common_elements) < max(length(first_list[[i]]),length(second_list[[j]])) ) {
+        warning("Elements of two list don't match!")
+      }
     }
   }
   
