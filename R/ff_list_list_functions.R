@@ -22,7 +22,9 @@ compare_ff_list_list <- function(data_list, comparison_function) {
   
   result_matrix <- matrix(0, nrow=length(data_list), ncol=length(data_list))
   for(i in seq_along(data_list)) {
-    for(j in (i+1):length(data_list)) {
+    
+    for(j in seq_along(data_list)) { #(i+1):length(data_list)
+      if(i <= j) {next}
       
       common_elements <- intersect(names(data_list[[i]]), names(data_list[[j]]))
       result_matrix[i,j] <- comparison_function(data_list[[i]][common_elements], data_list[[j]][common_elements])

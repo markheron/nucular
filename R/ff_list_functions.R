@@ -43,7 +43,11 @@ array_list_to_ff_list <- function(array_list) {
   
   ff_list <- list()
   for(name in names(array_list)) {
-    ff_list[[name]] <- as.ff(as.matrix(array_list[[name]]))
+    if( !is.null(array_list[[name]]) & all(dim(array_list[[name]]) > 0) ) {
+      ff_list[[name]] <- as.ff(as.array(array_list[[name]]))
+    } else {
+      warning(paste("The array_list element",name,"is empty and skipped!"))
+    }
   }
   return(ff_list)
 }
@@ -163,31 +167,13 @@ cor_ff_list <- function(x,y) {
 }
 
 
-
 ##' center_ff_list
-##'
-##' centers all list elements by their combined mean
-##' @export
-##' @param x list of ff_vectors
-##' @return centered x (mean = 0)
-##' @author Mark Heron
-center_ff_list <- function(x) {
-  return( lapply(x, function(a) a - mean_list(x) ))
-}
-
-
+##' 
+##' just use center_list
 
 ##' scale_ff_list
-##'
-##' scales all list elements by their combined mean
-##' @export
-##' @param x list of ff_vectors
-##' @return scaled x (mean = 1)
-##' @author Mark Heron
-scale_ff_list <- function(x) {
-  return( lapply(x, function(a) a / mean_list(x) ))
-}
-
+##' 
+##' just_use scale_list
 
 
 ##' make_prob_ff_list
@@ -264,17 +250,8 @@ rmse_ff_list <- function(predictions, measurements) {
 
 
 #' intra_scaling_ff_list
-#'
-#' Scales each ff_vector in the list to average 1.
-#' Simple wrapper for lapply '/' mean
-#' @param ff_list where each vector should be scaled individually
-#' @return intra scaled ff_list
-#' @export
-#'
-intra_scaling_ff_list <- function(ff_list) {
-  
-  return(lapply(ff_list, function (x) x/mean(x, na.rm=TRUE)))
-}
+#' 
+#' use intre_scaling_list
 
 
 

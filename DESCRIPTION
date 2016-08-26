@@ -16,3 +16,4 @@ Imports:
     plyr,
     maRs,
     pRon
+RoxygenNote: 5.0.1

@@ -56,11 +56,20 @@ sd_ff <- function(x, centered=FALSE) {
 ##' @export
 ##' @param x a ff vector
 ##' @param y a second ff vector
+##' @param method ("pearson") which correlation should be computed, either "pearson" or "spearman" (has to briefly transform the ff's to vectors for rank)
 ##' @return pearson correlation between x and y
 ##' @author Mark Heron
-cor_ff <- function(x,y) {
+cor_ff <- function(x,y, method="pearson") {
   
-  centered_x = x - mean(x, na.rm=TRUE)
-  centered_y = y - mean(y, na.rm=TRUE)
+  if(method == "pearson") {
+    centered_x = x - mean(x, na.rm=TRUE)
+    centered_y = y - mean(y, na.rm=TRUE)
+  } else if(method == "spearman") {
+    ranked_x = as.ff(rank(as.ram(x), na.last="keep")) # as.ram has to be used or rank fails!
+    ranked_y = as.ff(rank(as.ram(y), na.last="keep"))
+    return(cor_ff(ranked_x, ranked_y, method="pearson"))
+  } else {
+    stop("only 'pearson' and 'spearman' correlations implemented in cor_ff")
+  }
   return( cov_ff(centered_x, centered_y, centered=TRUE) / (sd_ff(centered_x, centered=TRUE)*sd_ff(centered_y, centered=TRUE)) )  
 }

@@ -44,6 +44,7 @@ mean_list <- function(x, na.rm=TRUE) {
 ##' center_list
 ##'
 ##' centers all list elements by their combined mean
+##' works with ff_lists
 ##' @export
 ##' @param x list of numeric vectors
 ##' @return centered x (mean = 0)
@@ -57,6 +58,7 @@ center_list <- function(x) {
 ##' scale_list
 ##'
 ##' scales all list elements by their combined mean
+##' works with ff_lists
 ##' @export
 ##' @param x list of numeric vectors
 ##' @return scaled x (mean = 1)
@@ -65,4 +67,19 @@ scale_list <- function(x) {
   return( lapply(x, function(a) a / mean_list(x)) )
 }
 
+
+##'intra_scaling_list
+##'
+##' Scales each vector in the list to average 1.
+##' Simple wrapper for lapply '/' mean
+##' works on ff_lists
+##' 
+##' @export
+##' @param list where each vector should be scaled individually
+##' @return intra scaled list
+##' @author Mark Heron
+intra_scaling_list <- function(list) {
+  
+  return(lapply(list, function (x) x/mean(x, na.rm=TRUE)))
+}
 
