@@ -25,7 +25,7 @@ cov_ff <- function(x,y,centered=FALSE) {
   if(centered) {
     return( sum( x*y , na.rm=TRUE) / (sum( !is.na(x) & !is.na(y) )-1) )
   } else {
-    return( cov_ff(x- mean(x, na.rm=TRUE)),(y-mean(y, na.rm=TRUE)), centered=TRUE )
+    return( cov_ff(x- mean(x, na.rm=TRUE),(y-mean(y, na.rm=TRUE)), centered=TRUE ) )
   }
 }
 
