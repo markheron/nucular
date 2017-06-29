@@ -9,17 +9,14 @@ get_dyad_pos(data_list, dyad_base = "center", offset = 73)
 \arguments{
 \item{data_list}{list of mapped fragments for each chromosome}
 
-\item{dyad_base}{based on what position should the dyad position be calculated}
+\item{dyad_base}{one of "center" (default), "start". "end" and "dinucleosome"; Based on which feature should the dyad position be calculated ("dinucleosome" == "start"+"end")}
 
-\item{offset}{offset if the dyad position isn't calculated from the center}
+\item{offset}{(integer) offset if the dyad position isn't calculated from the center (\code{-offset} is used if \code{dyad_base=="end"})}
 }
 \value{
-list of ff matricies with dyad positions and intensity
+list of ff matricies with dyad positions and intensities
 }
 \description{
 Extracts the dyad positions in the chosen way from a table with mapped fragment start and ends
-}
-\author{
-Mark Heron
 }
 

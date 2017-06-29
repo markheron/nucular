@@ -9,17 +9,14 @@ adjust_X_chr(ff_list, X_chr, Xfactor)
 \arguments{
 \item{ff_list}{list of ff objects each representing data of one chromosome. IMPORTANT: the data in this list will be changed!}
 
-\item{X_chr}{name of the X chromosome in ff_list}
+\item{X_chr}{(character) name of the X chromosome in \code{ff_list}}
 
-\item{Xfactor}{factor by which the counts should be adjusted (2 for male cell lines, 4/3 for male/female mixtures (embryo's or unspecific adult flies))}
+\item{Xfactor}{(numeric) factor by which the counts should be adjusted (2 for male cell lines, 4/3 for male/female mixtures, i.e. embryo's or unspecific adult flies)}
 }
 \value{
-adjusted ff_list
+reference to the ff_list, which is now adjusted. IMPORTANT: this is the same ff_list as the input, no copy is created!
 }
 \description{
-Adjusts lower X chromosome counts due cells being male or a mixture of male/female.
-}
-\author{
-Mark Heron
+Adjusts lower X chromosome counts due to cells being male or a mixture of male/female.
 }
 

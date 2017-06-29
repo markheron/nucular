@@ -13,11 +13,12 @@ NULL
 ##' compare_ff_list_list
 ##'
 ##' Applies a comparison function pairwise between all data_list elements and saves the results in a matrix
+##' 
 ##' @export
-##' @param data_list of the ff_list objects to compare
+##' @param data_list list of the ff_list objects to compare
 ##' @param comparison_function comparison function to use, e.g. cor_ff_list
 ##' @return comparison matrix
-##' @author Mark Heron
+##' 
 compare_ff_list_list <- function(data_list, comparison_function) {
   
   result_matrix <- matrix(0, nrow=length(data_list), ncol=length(data_list))
@@ -30,7 +31,7 @@ compare_ff_list_list <- function(data_list, comparison_function) {
       result_matrix[i,j] <- comparison_function(data_list[[i]][common_elements], data_list[[j]][common_elements])
       
       if(length(common_elements) < max(length(data_list[[i]]),length(data_list[[j]])) ) {
-        warning("Elements of two list don't match!")
+        warning("Elements of two lists don't match!")
       }
     }
   }
@@ -45,11 +46,12 @@ compare_ff_list_list <- function(data_list, comparison_function) {
 
 ##' cor_ff_list_list
 ##'
-##' Computes the pairwise correlations between the list elements and saves them in a matrix
+##' Computes the pairwise correlations between the list elements and saves them in a matrix.
+##' 
 ##' @export
-##' @param data_list of the ff_list objects to compute the correlations between.
+##' @param data_list list of the ff_list objects to compute the correlations between
 ##' @return correlation matrix
-##' @author Mark Heron
+##' 
 cor_ff_list_list <- function(data_list) {
   
   return( compare_ff_list_list(data_list, cor_ff_list) )
@@ -59,13 +61,14 @@ cor_ff_list_list <- function(data_list) {
 
 ##' compare_ff_list_list_vs_ff_list_list
 ##'
-##' Applies a comparison function pairwise between the list elements of two different lists and saves the results in a matrix
+##' Applies a comparison function pairwise between the list elements of two different lists and saves the results in a matrix.
+##' 
 ##' @export
-##' @param first_list of the ff_list objects to compute the correlations from.
-##' @param second_list of the ff_list objects to compute the correlations to.
+##' @param first_list list of the ff_list objects to compute the correlations from
+##' @param second_list list of the ff_list objects to compute the correlations to
 ##' @param comparison_function comparison function to use, e.g. cor_ff_list
 ##' @return comparison matrix
-##' @author Mark Heron
+##' 
 compare_ff_list_list_vs_ff_list_list <- function(first_list, second_list, comparison_function) {
   
   result_matrix <- matrix(0, nrow=length(first_list), ncol=length(second_list))
@@ -75,7 +78,7 @@ compare_ff_list_list_vs_ff_list_list <- function(first_list, second_list, compar
       result_matrix[i,j] <- comparison_function(first_list[[i]][common_elements], second_list[[j]][common_elements])
       
       if(length(common_elements) < max(length(first_list[[i]]),length(second_list[[j]])) ) {
-        warning("Elements of two list don't match!")
+        warning("Elements of two lists don't match!")
       }
     }
   }
@@ -89,12 +92,13 @@ compare_ff_list_list_vs_ff_list_list <- function(first_list, second_list, compar
 
 ##' cor_ff_list_list_vs_ff_list_list
 ##'
-##' Computes the pairwise correlations between the list elements of two different lists and saves them in a matrix
+##' Computes the pairwise correlations between the list elements of two different lists and saves them in a matrix.
+##' 
 ##' @export
-##' @param first_list of the ff_list objects to compute the correlations from.
-##' @param second_list of the ff_list objects to compute the correlations to.
+##' @param first_list list of the ff_list objects to compute the correlations from
+##' @param second_list list of the ff_list objects to compute the correlations to
 ##' @return correlation matrix
-##' @author Mark Heron
+##' 
 cor_ff_list_list_vs_ff_list_list <- function(first_list, second_list) {
   
   return(compare_ff_list_list_vs_ff_list_list(first_list, second_list, cor_ff_list))
@@ -104,12 +108,13 @@ cor_ff_list_list_vs_ff_list_list <- function(first_list, second_list) {
 
 ##' likelihood_ff_list_list_vs_ff_list_list
 ##'
-##' Computes the pairwise likelihood between the list elements of two different lists and saves them in a matrix
+##' Computes the pairwise likelihood between the list elements of two different lists and saves them in a matrix.
+##' 
 ##' @export
-##' @param first_list of the ff_list objects
-##' @param second_list of the ff_list objects
+##' @param first_list list of the ff_list objects that represent the predictions
+##' @param second_list list of the ff_list objects that represent the measurements
 ##' @return likelihood matrix
-##' @author Mark Heron
+##' 
 likelihood_ff_list_list_vs_ff_list_list <- function(first_list, second_list) {
   
   return(compare_ff_list_list_vs_ff_list_list(first_list, second_list, likelihood_ff_list))
@@ -120,11 +125,12 @@ likelihood_ff_list_list_vs_ff_list_list <- function(first_list, second_list) {
 ##' convertSparse2occ_ff_list_list
 ##'
 ##' Individually converts a list of different sparse representation of dyad positions to nucleosome occupancy as list of ff vectors.
+##' 
 ##' @export
 ##' @param data_list list of different sparse representation matrix lists
-##' @param lengths list of chromosome lengths, names must match those of data_list subelements
+##' @param lengths list of chromosome lengths, \code{names} must match the \code{names} of data_list sub-elements (i.e. \code{names(data_list[[1]])})
 ##' @return list of lists of ff vectors with genomic occuopancy
-##' @author Mark Heron
+##' 
 convertSparse2occ_ff_list_list <- function(data_list, lengths) {
   
   occ_list <- list()

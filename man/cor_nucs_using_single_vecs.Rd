@@ -11,16 +11,13 @@ cor_nucs_using_single_vecs(data_list1, data_list2, lengths)
 
 \item{data_list2}{second ff_list of nucleosome positions}
 
-\item{lengths}{list of chromosome lengths (names must match subset of the data_list's)}
+\item{lengths}{list of chromosome lengths (\code{names} must match subset of the data_list's \code{names})}
 }
 \value{
 correlation pearson correlation between the nucleosome occupancies
 }
 \description{
 Calculates the pearson correlation between two nucleosome occupancy profiles given their sparse representation.
-Same as cor_nucs but uses an older non optimized method, being kept for testing purposis.
-}
-\author{
-Mark Heron
+Same as cor_nucs but uses an older non-optimized method, being kept for testing purposis.
 }
 

@@ -9,14 +9,11 @@ convertRaw2Rdata(name, folder = "", extension = ".tabular")
 \arguments{
 \item{name}{of the data file}
 
-\item{folder}{in which the file is to be found}
+\item{folder}{in which the file is to be found,  default: ""}
 
-\item{extension}{of the data file, standard is ".tabular"}
+\item{extension}{of the data file, default: ".tabular"}
 }
 \description{
 Converts raw data tables from the galaxy pipeline to lists of matricies that is saved as an Rdata for futher use.
-}
-\author{
-Mark Heron
 }
 

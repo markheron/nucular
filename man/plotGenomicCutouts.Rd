@@ -27,7 +27,4 @@ olinucleotide frequency matrix, rows are the oligonucleotides, cols the position
 \description{
 Create oligonucleotide frequency profile figure from genome positions
 }
-\author{
-Mark Heron
-}
 

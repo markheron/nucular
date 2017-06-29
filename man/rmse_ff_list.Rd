@@ -7,12 +7,12 @@
 rmse_ff_list(predictions, measurements)
 }
 \arguments{
-\item{predictions}{a list of ff vectors}
+\item{predictions}{(list of ff vectors)}
 
-\item{measurements}{a second list of ff vectors}
+\item{measurements}{(list of ff vectors)}
 }
 \value{
-root mean square error
+(numeric) root mean square error
 }
 \description{
 Computes the root mean square error between two ff_lists.

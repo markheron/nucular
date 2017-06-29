@@ -9,15 +9,12 @@ sum_list(x, na.rm = TRUE)
 \arguments{
 \item{x}{list of numeric vectors}
 
-\item{na.rm}{should NA values be ignored (see sum)}
+\item{na.rm}{should NA values be ignored (see \code{\link{sum}})}
 }
 \value{
-sum of the list
+(numeric) sum of all values in the list
 }
 \description{
-calculates the sum of all list elements together
-}
-\author{
-Mark Heron
+Calculates the sum of all list elements together.
 }
 

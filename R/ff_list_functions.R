@@ -14,12 +14,13 @@ NULL
 
 ##' hist_ff_list
 ##'
-##' Plots a histogram for the values in column for every ff_list element.
+##' Plots a histogram for the values in \code{column} for every ff_list element.
+##' 
 ##' @export
-##' @param ff_list list with ff objects
-##' @param column to plot the histogram for
-##' @param ... parameters that can be passed on the hist
-##' @author Mark Heron
+##' @param ff_list list of ff matricies
+##' @param column of the ff_list elements to plot the histogram for
+##' @param ... parameters to be passed on to \code{\link{hist}}
+##' 
 hist_ff_list <- function(ff_list, column, ...) {
   hist( Reduce(c, lapply(ff_list, function (x) x[,column])), ...)
   gc()
@@ -34,11 +35,12 @@ hist_ff_list <- function(ff_list, column, ...) {
 
 ##' array_list_to_ff_list
 ##'
-##' Creates a list where each element of array_list is saved in as an ff object
+##' Creates a copy of array_list where each element is saved as an ff object.
+##' 
 ##' @export
 ##' @param array_list to convert to a ff_list
 ##' @return list of ff objects
-##' @author Mark Heron
+##' 
 array_list_to_ff_list <- function(array_list) {
   
   ff_list <- list()
@@ -46,7 +48,7 @@ array_list_to_ff_list <- function(array_list) {
     if( !is.null(array_list[[name]]) & all(dim(array_list[[name]]) > 0) ) {
       ff_list[[name]] <- as.ff(as.array(array_list[[name]]))
     } else {
-      warning(paste("The array_list element",name,"is empty and skipped!"))
+      warning(paste("The array_list element", name, "is empty and skipped!"))
     }
   }
   return(ff_list)
@@ -55,11 +57,12 @@ array_list_to_ff_list <- function(array_list) {
 
 ##' df_list_to_ffdf_list
 ##'
-##' Creates a list where each element of df_list is saved in as an ffdf object
+##' Creates a copy of df_list where each element is saved as an ffdf object.
+##' 
 ##' @export
 ##' @param df_list  to convert to a ffdf_list
 ##' @return list of ffdf objects
-##' @author Mark Heron
+##' 
 df_list_to_ffdf_list <- function(df_list) {
   
   ff_list <- list()
@@ -72,14 +75,15 @@ df_list_to_ffdf_list <- function(df_list) {
 
 ##' filter_column_range_ff_list
 ##'
-##' Filters each ff matrix in the list based on the column, min and max.
+##' Filters the rows of the ff matrices in the list based on \code{column}, \code{min} and \code{max}.
+##' 
 ##' @export
 ##' @param ff_list to filter
 ##' @param column based on which to filter
 ##' @param min allowed column value
 ##' @param max allowed column value
 ##' @return list of ff's filtered by min/max on column
-##' @author Mark Heron
+##' 
 filter_column_range_ff_list <- function(ff_list, column, min, max) {
   
   filtered_ff_list <- lapply(ff_list, function (x) {
@@ -96,12 +100,13 @@ filter_column_range_ff_list <- function(ff_list, column, min, max) {
 
 ##' convertSparse2occ_ff_list
 ##'
-##' Converts sparse representation of dyad positions to nucleosome occupancy as list of ff vectors.
+##' Converts sparse representation of dyad positions to nucleosome occupancy ff vectors, for a list of data.
+##' 
 ##' @export
 ##' @param sparse list of sparse representation matricies
-##' @param lengths list of chromosome lengths, names must match those of sparse
+##' @param lengths list of chromosome lengths, \code{names} must match those of \code{sparse}
 ##' @return list of ff vectors with genomic occuopancy
-##' @author Mark Heron
+##' 
 convertSparse2occ_ff_list <- function(sparse, lengths) {
   
   occ <- lapply(convertSparse2Complete_ff(sparse, lengths), function (x) smear_ff(x, -73,73))
@@ -112,13 +117,14 @@ convertSparse2occ_ff_list <- function(sparse, lengths) {
 
 ##' cov_ff_list
 ##' 
-##' Computest the covariance between two ff vectors.
+##' Computest the covariance between two ff vector lists.
+##' 
 ##' @export
-##' @param x a list of ff vectors
-##' @param y a second list of ff vectors
-##' @param centered boolean, is the mean of x and y already = 0 ?
+##' @param x list of ff vectors
+##' @param y list of ff vectors
+##' @param centered (boolean) is the mean_list of x and y == 0?
 ##' @return covariance between x and y
-##' @author Mark Heron
+##' 
 cov_ff_list <- function(x,y,centered=FALSE) {
   
   if(centered) {
@@ -132,12 +138,13 @@ cov_ff_list <- function(x,y,centered=FALSE) {
 
 ##' sd_ff_list
 ##'
-##' Computes the standard deviation of a vector.
+##' Computes the standard deviation of a ff vector list.
+##' 
 ##' @export
-##' @param x a list of ff vectors
-##' @param centered  boolean, is the mean already = 0 ?
+##' @param x list of ff vectors
+##' @param centered  boolean, is the mean_list of x == 0?
 ##' @return standard deviation of x
-##' @author Mark Heron
+##' 
 sd_ff_list <- function(x, centered=FALSE) {
   
   if(centered) {
@@ -152,11 +159,12 @@ sd_ff_list <- function(x, centered=FALSE) {
 ##' cor_ff_list
 ##' 
 ##' Computes the correlation between two lists of ff vectors.
+##' 
 ##' @export
-##' @param x a list of ff vectors
-##' @param y a second list of ff vectors
+##' @param x list of ff vectors
+##' @param y list of ff vectors
 ##' @return pearson correlation between x and y
-##' @author Mark Heron
+##' 
 cor_ff_list <- function(x,y) {
   
   not_na_pos <- mapply( function (a,b) !( is.na(a) | is.na(b) ), x, y, SIMPLIFY=FALSE)
@@ -169,19 +177,25 @@ cor_ff_list <- function(x,y) {
 
 ##' center_ff_list
 ##' 
-##' just use center_list
+##' use center_list
 
 ##' scale_ff_list
 ##' 
-##' just_use scale_list
+##' use scale_list
+
+#' intra_scaling_ff_list
+#' 
+#' use intre_scaling_list
+
 
 
 ##' make_prob_ff_list
 ##'
-##' scales all list elements so their sum is 1, i.e. ig there are no negative values they can be used as a probability
-##' @param x list of ff_vectors
-##' @return probability version of x (sum = 1)
-##' @author Mark Heron
+##' Scales all list elements so their sum is 1, i.e. if there are no negative values they can be used as probabilities.
+##' 
+##' @param x (list of ff_vectors)
+##' @return (list of ff_vectors) probability version of x (sum == 1)
+##' 
 make_prob_ff_list <- function(x) {
   
   x_sum <- sum_list(x)
@@ -193,11 +207,12 @@ make_prob_ff_list <- function(x) {
 ##' likelihood_ff_list
 ##' 
 ##' Computes a simple likelihood of a list of prediction vectors given a matching list of measurement vectors.
+##' 
 ##' @export
-##' @param predictions a list of ff vectors
-##' @param measurements a second list of ff vectors
-##' @return likelihood
-##' @author Mark Heron
+##' @param predictions (list of ff vectors)
+##' @param measurements (list of ff vectors)
+##' @return (numeric) likelihood
+##' 
 likelihood_ff_list <- function(predictions, measurements) {
   
   # replace zero predictions with minimum predictions, so that the likelihood isn't -Inf because of them
@@ -217,10 +232,12 @@ likelihood_ff_list <- function(predictions, measurements) {
 ##' mae_ff_list
 ##' 
 ##' Computes the mean absolute error between two ff_lists.
+##' 
 ##' @export
-##' @param predictions a list of ff vectors
-##' @param measurements a second list of ff vectors
-##' @return mean absolute error
+##' @param predictions (list of ff vectors)
+##' @param measurements (list of ff vectors)
+##' @return (numeric) mean absolute error
+##' 
 mae_ff_list <- function(predictions, measurements) {
   
   prob_pred <- make_prob_ff_list(predictions)
@@ -234,10 +251,12 @@ mae_ff_list <- function(predictions, measurements) {
 ##' rmse_ff_list
 ##' 
 ##' Computes the root mean square error between two ff_lists.
+##' 
 ##' @export
-##' @param predictions a list of ff vectors
-##' @param measurements a second list of ff vectors
-##' @return root mean square error
+##' @param predictions (list of ff vectors)
+##' @param measurements (list of ff vectors)
+##' @return (numeric) root mean square error
+##' 
 rmse_ff_list <- function(predictions, measurements) {
   
   prob_pred <- make_prob_ff_list(predictions)
@@ -245,26 +264,5 @@ rmse_ff_list <- function(predictions, measurements) {
   
   return( sqrt( mean_list( mapply( function (a,b) {(a-b)^2} , prob_pred, prob_meas, SIMPLIFY=FALSE) ) ) )
 }
-
-
-
-
-#' intra_scaling_ff_list
-#' 
-#' use intre_scaling_list
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 

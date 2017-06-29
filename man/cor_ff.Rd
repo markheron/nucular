@@ -11,15 +11,12 @@ cor_ff(x, y, method = "pearson")
 
 \item{y}{a second ff vector}
 
-\item{method}{("pearson") which correlation should be computed, either "pearson" or "spearman" (has to briefly transform the ff's to vectors for rank)}
+\item{method}{one of "pearson" (default) or "spearman", which correlation should be computed. "spearman" has to briefly transform the ff's to vectors for rank.}
 }
 \value{
-pearson correlation between x and y
+correlation between x and y
 }
 \description{
-Computes the correlation between two vectors.
-}
-\author{
-Mark Heron
+Computes the correlation between two ff vectors.
 }
 

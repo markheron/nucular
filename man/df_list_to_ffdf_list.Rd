@@ -13,9 +13,6 @@ df_list_to_ffdf_list(df_list)
 list of ffdf objects
 }
 \description{
-Creates a list where each element of df_list is saved in as an ffdf object
-}
-\author{
-Mark Heron
+Creates a copy of df_list where each element is saved as an ffdf object.
 }
 

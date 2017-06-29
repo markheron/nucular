@@ -7,17 +7,14 @@
 sd_ff_list(x, centered = FALSE)
 }
 \arguments{
-\item{x}{a list of ff vectors}
+\item{x}{list of ff vectors}
 
-\item{centered}{boolean, is the mean already = 0 ?}
+\item{centered}{boolean, is the mean_list of x == 0?}
 }
 \value{
 standard deviation of x
 }
 \description{
-Computes the standard deviation of a vector.
-}
-\author{
-Mark Heron
+Computes the standard deviation of a ff vector list.
 }
 

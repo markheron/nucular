@@ -7,7 +7,7 @@
 compare_ff_list_list(data_list, comparison_function)
 }
 \arguments{
-\item{data_list}{of the ff_list objects to compare}
+\item{data_list}{list of the ff_list objects to compare}
 
 \item{comparison_function}{comparison function to use, e.g. cor_ff_list}
 }
@@ -16,8 +16,5 @@ comparison matrix
 }
 \description{
 Applies a comparison function pairwise between all data_list elements and saves the results in a matrix
-}
-\author{
-Mark Heron
 }
 

@@ -10,12 +10,13 @@ NULL
 
 ##' sum_list
 ##'
-##' calculates the sum of all list elements together
+##' Calculates the sum of all list elements together.
+##' 
 ##' @export
 ##' @param x list of numeric vectors
-##' @param na.rm should NA values be ignored (see sum)
-##' @return sum of the list
-##' @author Mark Heron
+##' @param na.rm should NA values be ignored (see \code{\link{sum}})
+##' @return (numeric) sum of all values in the list
+##' 
 sum_list <- function(x, na.rm=TRUE) {
   
   sum <- sum(unlist(lapply(x, sum, na.rm=na.rm)), na.rm=na.rm)
@@ -25,12 +26,14 @@ sum_list <- function(x, na.rm=TRUE) {
 
 ##' mean_list
 ##'
-##' calculates the mean of all list elements together
+##' Calculates the mean of all list elements together.
+##' I.e. the mean of all values contained in list elements, \emph{not} the mean of the mean of all list elements!
+##' 
 ##' @export
 ##' @param x list of numeric vectors
-##' @param na.rm should NA values be ignored (see sum)
-##' @return mean of the list
-##' @author Mark Heron
+##' @param na.rm should NA values be ignored (see \code{\link{sum}})
+##' @return (numeric) mean of all values in the list
+##'
 mean_list <- function(x, na.rm=TRUE) {
   
   x_sum <- sum_list(x, na.rm=na.rm)
@@ -43,43 +46,47 @@ mean_list <- function(x, na.rm=TRUE) {
 
 ##' center_list
 ##'
-##' centers all list elements by their combined mean
-##' works with ff_lists
+##' Centers all list elements by their combined mean.
+##' Works with lists of ff vectors.
+##' 
 ##' @export
-##' @param x list of numeric vectors
-##' @return centered x (mean = 0)
-##' @author Mark Heron
+##' @param x list of numeric vectors (or ff vectors)
+##' @return (list of numeric (ff) vectors) centered \code{x} (i.e., mean_list == 0)
+##' 
 center_list <- function(x) {
-  return( lapply(x, function(a) a - mean_list(x)) )
+  tmp_list_mean <- mean_list(x)
+  return( lapply(x, function(a) a - tmp_list_mean) )
 }
 
 
 
 ##' scale_list
 ##'
-##' scales all list elements by their combined mean
-##' works with ff_lists
+##' Scales all list elements by their combined mean.
+##' Works with lists of ff vectors.
+##' 
 ##' @export
-##' @param x list of numeric vectors
-##' @return scaled x (mean = 1)
-##' @author Mark Heron
+##' @param x list of numeric vectors (or ff vectors)
+##' @return (list of numeric (ff) vectors) scaled \code{x} (i.e., mean_list == 1)
+##' 
 scale_list <- function(x) {
-  return( lapply(x, function(a) a / mean_list(x)) )
+  tmp_list_mean <- mean_list(x)
+  return( lapply(x, function(a) a / tmp_list_mean) )
 }
 
 
-##'intra_scaling_list
+##' intra_scaling_list
 ##'
-##' Scales each vector in the list to average 1.
-##' Simple wrapper for lapply '/' mean
-##' works on ff_lists
+##' Scales each vector in the list to mean == 1.
+##' Simple wrapper for lapply '/' mean.
+##' Works with lists of ff vectors.
 ##' 
 ##' @export
 ##' @param list where each vector should be scaled individually
 ##' @return intra scaled list
-##' @author Mark Heron
+##' 
 intra_scaling_list <- function(list) {
   
-  return(lapply(list, function (x) x/mean(x, na.rm=TRUE)))
+  return(lapply(list, function (x) x / mean(x, na.rm=TRUE)))
 }
 

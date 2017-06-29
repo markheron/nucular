@@ -7,15 +7,12 @@
 cor_ff_list_list(data_list)
 }
 \arguments{
-\item{data_list}{of the ff_list objects to compute the correlations between.}
+\item{data_list}{list of the ff_list objects to compute the correlations between}
 }
 \value{
 correlation matrix
 }
 \description{
-Computes the pairwise correlations between the list elements and saves them in a matrix
-}
-\author{
-Mark Heron
+Computes the pairwise correlations between the list elements and saves them in a matrix.
 }
 

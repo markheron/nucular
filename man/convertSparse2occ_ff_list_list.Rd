@@ -9,15 +9,12 @@ convertSparse2occ_ff_list_list(data_list, lengths)
 \arguments{
 \item{data_list}{list of different sparse representation matrix lists}
 
-\item{lengths}{list of chromosome lengths, names must match those of data_list subelements}
+\item{lengths}{list of chromosome lengths, \code{names} must match the \code{names} of data_list sub-elements (i.e. \code{names(data_list[[1]])})}
 }
 \value{
 list of lists of ff vectors with genomic occuopancy
 }
 \description{
 Individually converts a list of different sparse representation of dyad positions to nucleosome occupancy as list of ff vectors.
-}
-\author{
-Mark Heron
 }
 

@@ -7,16 +7,13 @@
 hist_ff_list(ff_list, column, ...)
 }
 \arguments{
-\item{ff_list}{list with ff objects}
+\item{ff_list}{list of ff matricies}
 
-\item{column}{to plot the histogram for}
+\item{column}{of the ff_list elements to plot the histogram for}
 
-\item{...}{parameters that can be passed on the hist}
+\item{...}{parameters to be passed on to \code{\link{hist}}}
 }
 \description{
-Plots a histogram for the values in column for every ff_list element.
-}
-\author{
-Mark Heron
+Plots a histogram for the values in \code{column} for every ff_list element.
 }
 

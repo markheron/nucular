@@ -21,11 +21,12 @@ NULL
 ##' convertRaw2Rdata
 ##'
 ##' Converts raw data tables from the galaxy pipeline to lists of matricies that is saved as an Rdata for futher use.
+##' 
 ##' @export
 ##' @param name of the data file
-##' @param folder in which the file is to be found
-##' @param extension of the data file, standard is ".tabular"
-##' @author Mark Heron
+##' @param folder in which the file is to be found,  default: ""
+##' @param extension of the data file, default: ".tabular"
+##' 
 convertRaw2Rdata <- function(name, folder="", extension=".tabular") {
   
   warning("convertRaw2Rdata assumes the data has a 1-based genome index, not 0-based!")
@@ -35,7 +36,7 @@ convertRaw2Rdata <- function(name, folder="", extension=".tabular") {
   chr_list_table <- list()
   
   for( chr_name in levels(raw_table[,1])) {
-    chr_list_table[[chr_name]] <- subset(raw_table,chr == chr_name )[-1]
+    chr_list_table[[chr_name]] <- subset(raw_table, chr == chr_name )[-1]
   }
   chr_table <- lapply(chr_list_table, as.ram)
   save(chr_table, file=paste0(name,"_chr_table.Rdata"), compress=TRUE)
@@ -48,6 +49,7 @@ convertRaw2Rdata <- function(name, folder="", extension=".tabular") {
 ##' plotGenomicCutouts
 ##'
 ##' Create oligonucleotide frequency profile figure from genome positions
+##' 
 ##' @export
 ##' @param pos ff_list of the nucleosome fragments
 ##' @param strand list of "+"/"-" vectors
@@ -57,7 +59,7 @@ convertRaw2Rdata <- function(name, folder="", extension=".tabular") {
 ##' @param chromosomes which chromosomes to use (must be contained in both genome and pos)
 ##' @param sample if >0 only use the first sample positions per chromosome
 ##' @return olinucleotide frequency matrix, rows are the oligonucleotides, cols the positions around the dyad
-##' @author Mark Heron
+##' 
 plotGenomicCutouts <- function(pos, strand, size, order, genome, chromosomes, sample=0) {
     
   comp_oli_pos <- complementary_oligo_positions(order+1)
@@ -123,12 +125,13 @@ plotGenomicCutouts <- function(pos, strand, size, order, genome, chromosomes, sa
 ##' cor_nucs
 ##'
 ##' Calculates the pearson correlation between two nucleosome occupancy profiles given their sparse representation.
+##' 
 ##' @export
 ##' @param data_list1 first ff_list of nucleosome positions
 ##' @param data_list2 second ff_list of nucleosome positions
 ##' @param lengths list of chromosome lengths (names must match subset of the data_list's )
 ##' @return correlation pearson correlation between the nucleosome occupancies
-##' @author Mark Heron
+##'
 cor_nucs <- function(data_list1, data_list2, lengths) {
   
   occ1 <- convertSparse2occ_ff_list(data_list1[names(lengths)], lengths)
@@ -141,12 +144,13 @@ cor_nucs <- function(data_list1, data_list2, lengths) {
 ##' cor_nucs_using_single_vecs
 ##'
 ##' Calculates the pearson correlation between two nucleosome occupancy profiles given their sparse representation.
-##' Same as cor_nucs but uses an older non optimized method, being kept for testing purposis.
+##' Same as cor_nucs but uses an older non-optimized method, being kept for testing purposis.
+##' 
 ##' @param data_list1 first ff_list of nucleosome positions
 ##' @param data_list2 second ff_list of nucleosome positions
-##' @param lengths list of chromosome lengths (names must match subset of the data_list's)
+##' @param lengths list of chromosome lengths (\code{names} must match subset of the data_list's \code{names})
 ##' @return correlation pearson correlation between the nucleosome occupancies
-##' @author Mark Heron
+##' 
 cor_nucs_using_single_vecs <- function(data_list1, data_list2, lengths) {
   
   complete1 <- convertSparse2Complete_ff(data_list1[names(lengths)], lengths)
@@ -166,11 +170,12 @@ cor_nucs_using_single_vecs <- function(data_list1, data_list2, lengths) {
 ##' cor_nucs_multiple
 ##'
 ##' Computes all pairwise pearson correlations between the nucleosome occupancies.
+##' 
 ##' @export
 ##' @param data_list list of ff_list of nucleosome dyad positions
-##' @param lengths list of chromosome lengths (names must match subset of the data_list's)
-##' @return top triangle matrix of the pearson correlations between nucleosome occupancies.
-##' @author Mark Heron
+##' @param lengths list of chromosome lengths (\code{names} must match subset of the data_list's \code{names})
+##' @return top triangle matrix of the pearson correlations between nucleosome occupancies
+##' 
 cor_nucs_multiple <- function(data_list, lengths) {
   
   occ_list <- convertSparse2occ_ff_list_list(data_list, lengths)
@@ -184,12 +189,13 @@ cor_nucs_multiple <- function(data_list, lengths) {
 ##' get_dyad_pos
 ##'
 ##' Extracts the dyad positions in the chosen way from a table with mapped fragment start and ends
+##' 
 ##' @export
 ##' @param data_list list of mapped fragments for each chromosome
-##' @param dyad_base based on what position should the dyad position be calculated
-##' @param offset offset if the dyad position isn't calculated from the center
-##' @return list of ff matricies with dyad positions and intensity
-##' @author Mark Heron
+##' @param dyad_base one of "center" (default), "start". "end" and "dinucleosome"; Based on which feature should the dyad position be calculated ("dinucleosome" == "start"+"end")
+##' @param offset (integer) offset if the dyad position isn't calculated from the center (\code{-offset} is used if \code{dyad_base=="end"})
+##' @return list of ff matricies with dyad positions and intensities
+##' 
 get_dyad_pos <- function(data_list, dyad_base="center", offset=73) {
   
   dyad_pos <- list()
@@ -219,13 +225,14 @@ get_dyad_pos <- function(data_list, dyad_base="center", offset=73) {
 
 ##' adjust_X_chr
 ##'
-##' Adjusts lower X chromosome counts due cells being male or a mixture of male/female.
+##' Adjusts lower X chromosome counts due to cells being male or a mixture of male/female.
+##' 
 ##' @export
 ##' @param ff_list list of ff objects each representing data of one chromosome. IMPORTANT: the data in this list will be changed!
-##' @param X_chr name of the X chromosome in ff_list
-##' @param Xfactor factor by which the counts should be adjusted (2 for male cell lines, 4/3 for male/female mixtures (embryo's or unspecific adult flies))
-##' @return adjusted ff_list
-##' @author Mark Heron
+##' @param X_chr (character) name of the X chromosome in \code{ff_list}
+##' @param Xfactor (numeric) factor by which the counts should be adjusted (2 for male cell lines, 4/3 for male/female mixtures, i.e. embryo's or unspecific adult flies)
+##' @return reference to the ff_list, which is now adjusted. IMPORTANT: this is the same ff_list as the input, no copy is created!
+##'
 adjust_X_chr <- function(ff_list, X_chr, Xfactor) {
   
   ff_list[[X_chr]][,2] <- ff_list[[X_chr]][,2]*Xfactor
@@ -236,14 +243,15 @@ adjust_X_chr <- function(ff_list, X_chr, Xfactor) {
 
 ##' mask_repeats
 ##'
-##' Masks repeat regions read in from repeatMasker output files.
+##' Masks repeat regions read from repeatMasker output files.
+##' 
 ##' @export
 ##' @param occ_single (list of ff vectors) each ff representing one chromosome
 ##' @param mask_file_folder (character) name of the folder where the repeatMasker files for each chromosome can be found
 ##' @param repeats_to_mask (character vector) of types of repeats to mask
 ##' @param nuc_half_width (integer) amount to additionally mask to the left and right of the repeat
-##' @return the masked occupancy ff vector list
-##' @author Mark Heron
+##' @return the masked occupancy ff vector list (cloned so the original is \emph{not} changed)
+##' 
 mask_repeats <- function(occ_single, mask_file_folder, repeats_to_mask, nuc_half_width=73) {
   
   occ_masked <- list()
@@ -272,10 +280,12 @@ mask_repeats <- function(occ_single, mask_file_folder, repeats_to_mask, nuc_half
 ##' mask_Ns_in_ff_list
 ##'
 ##' Masks an ff_list based on N's in the genomic sequence.
+##' 
 ##' @export
 ##' @param ff_list to be masked
-##' @param genome_fasta DNAStringSet of the genomic sequence
-##' @return masked ff_list (cloned so the original isn't changed)
+##' @param genome_fasta (DNAStringSet) of the genome
+##' @return masked ff_list (cloned so the original is \emph{not} changed)
+##' 
 mask_Ns_in_ff_list <- function(ff_list, genome_fasta) {
   
   masked_ff_list <- list()
@@ -293,12 +303,15 @@ mask_Ns_in_ff_list <- function(ff_list, genome_fasta) {
 ##' uniquify_ff_list
 ##'
 ##' Removes duplicate fragments in a list of ff objects representing all reads for a chromosome.
+##' 
 ##' @export
 ##' @param ff_list list of ff matrices each representing data of one chromosome
 ##' @return demultiplexed 
-##' @author Mark Heron
-##' @importFrom plyr count
+##' 
 uniquify_ff_list <- function(ff_list) {
-  uniquified_ff_list <- lapply(ff_list, function(x) as.ff(as.matrix( count(x)[, 1:3])))
+  if (!requireNamespace("plyr", quietly = TRUE)) {
+    stop("plyr needed for this function to work. Please install it.", call. = FALSE)
+  }
+  uniquified_ff_list <- lapply(ff_list, function(x) as.ff(as.matrix( plyr::count(x)[, 1:3])))
   return(uniquified_ff_list)
 }

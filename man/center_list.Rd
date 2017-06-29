@@ -7,16 +7,13 @@
 center_list(x)
 }
 \arguments{
-\item{x}{list of numeric vectors}
+\item{x}{list of numeric vectors (or ff vectors)}
 }
 \value{
-centered x (mean = 0)
+(list of numeric (ff) vectors) centered \code{x} (i.e., mean_list == 0)
 }
 \description{
-centers all list elements by their combined mean
-works with ff_lists
-}
-\author{
-Mark Heron
+Centers all list elements by their combined mean.
+Works with lists of ff vectors.
 }
 

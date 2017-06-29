@@ -7,17 +7,14 @@
 cor_ff_list_list_vs_ff_list_list(first_list, second_list)
 }
 \arguments{
-\item{first_list}{of the ff_list objects to compute the correlations from.}
+\item{first_list}{list of the ff_list objects to compute the correlations from}
 
-\item{second_list}{of the ff_list objects to compute the correlations to.}
+\item{second_list}{list of the ff_list objects to compute the correlations to}
 }
 \value{
 correlation matrix
 }
 \description{
-Computes the pairwise correlations between the list elements of two different lists and saves them in a matrix
-}
-\author{
-Mark Heron
+Computes the pairwise correlations between the list elements of two different lists and saves them in a matrix.
 }
 

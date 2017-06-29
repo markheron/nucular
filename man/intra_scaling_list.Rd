@@ -13,11 +13,8 @@ intra_scaling_list(list)
 intra scaled list
 }
 \description{
-Scales each vector in the list to average 1.
-Simple wrapper for lapply '/' mean
-works on ff_lists
-}
-\author{
-Mark Heron
+Scales each vector in the list to mean == 1.
+Simple wrapper for lapply '/' mean.
+Works with lists of ff vectors.
 }
 

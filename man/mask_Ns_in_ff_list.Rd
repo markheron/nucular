@@ -9,10 +9,10 @@ mask_Ns_in_ff_list(ff_list, genome_fasta)
 \arguments{
 \item{ff_list}{to be masked}
 
-\item{genome_fasta}{DNAStringSet of the genomic sequence}
+\item{genome_fasta}{(DNAStringSet) of the genome}
 }
 \value{
-masked ff_list (cloned so the original isn't changed)
+masked ff_list (cloned so the original is \emph{not} changed)
 }
 \description{
 Masks an ff_list based on N's in the genomic sequence.

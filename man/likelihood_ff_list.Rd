@@ -7,17 +7,14 @@
 likelihood_ff_list(predictions, measurements)
 }
 \arguments{
-\item{predictions}{a list of ff vectors}
+\item{predictions}{(list of ff vectors)}
 
-\item{measurements}{a second list of ff vectors}
+\item{measurements}{(list of ff vectors)}
 }
 \value{
-likelihood
+(numeric) likelihood
 }
 \description{
 Computes a simple likelihood of a list of prediction vectors given a matching list of measurement vectors.
-}
-\author{
-Mark Heron
 }
 

@@ -7,17 +7,14 @@
 likelihood_ff_list_list_vs_ff_list_list(first_list, second_list)
 }
 \arguments{
-\item{first_list}{of the ff_list objects}
+\item{first_list}{list of the ff_list objects that represent the predictions}
 
-\item{second_list}{of the ff_list objects}
+\item{second_list}{list of the ff_list objects that represent the measurements}
 }
 \value{
 likelihood matrix
 }
 \description{
-Computes the pairwise likelihood between the list elements of two different lists and saves them in a matrix
-}
-\author{
-Mark Heron
+Computes the pairwise likelihood between the list elements of two different lists and saves them in a matrix.
 }
 

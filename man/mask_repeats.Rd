@@ -17,12 +17,9 @@ mask_repeats(occ_single, mask_file_folder, repeats_to_mask,
 \item{nuc_half_width}{(integer) amount to additionally mask to the left and right of the repeat}
 }
 \value{
-the masked occupancy ff vector list
+the masked occupancy ff vector list (cloned so the original is \emph{not} changed)
 }
 \description{
-Masks repeat regions read in from repeatMasker output files.
-}
-\author{
-Mark Heron
+Masks repeat regions read from repeatMasker output files.
 }
 

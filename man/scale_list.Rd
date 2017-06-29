@@ -7,16 +7,13 @@
 scale_list(x)
 }
 \arguments{
-\item{x}{list of numeric vectors}
+\item{x}{list of numeric vectors (or ff vectors)}
 }
 \value{
-scaled x (mean = 1)
+(list of numeric (ff) vectors) scaled \code{x} (i.e., mean_list == 1)
 }
 \description{
-scales all list elements by their combined mean
-works with ff_lists
-}
-\author{
-Mark Heron
+Scales all list elements by their combined mean.
+Works with lists of ff vectors.
 }
 

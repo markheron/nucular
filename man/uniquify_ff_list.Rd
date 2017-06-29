@@ -15,7 +15,4 @@ demultiplexed
 \description{
 Removes duplicate fragments in a list of ff objects representing all reads for a chromosome.
 }
-\author{
-Mark Heron
-}
 

@@ -19,9 +19,6 @@ filter_column_range_ff_list(ff_list, column, min, max)
 list of ff's filtered by min/max on column
 }
 \description{
-Filters each ff matrix in the list based on the column, min and max.
-}
-\author{
-Mark Heron
+Filters the rows of the ff matrices in the list based on \code{column}, \code{min} and \code{max}.
 }
 

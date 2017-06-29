@@ -9,15 +9,12 @@ cor_nucs_multiple(data_list, lengths)
 \arguments{
 \item{data_list}{list of ff_list of nucleosome dyad positions}
 
-\item{lengths}{list of chromosome lengths (names must match subset of the data_list's)}
+\item{lengths}{list of chromosome lengths (\code{names} must match subset of the data_list's \code{names})}
 }
 \value{
-top triangle matrix of the pearson correlations between nucleosome occupancies.
+top triangle matrix of the pearson correlations between nucleosome occupancies
 }
 \description{
 Computes all pairwise pearson correlations between the nucleosome occupancies.
-}
-\author{
-Mark Heron
 }
 

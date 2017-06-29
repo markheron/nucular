@@ -7,19 +7,16 @@
 cov_ff(x, y, centered = FALSE)
 }
 \arguments{
-\item{x}{a ff vector}
+\item{x}{(numeric ff vector)}
 
-\item{y}{a second ff vector}
+\item{y}{(numeric ff vector)}
 
-\item{centered}{boolean, is the mean already = 0 ?}
+\item{centered}{(boolean) are the means of x and y == 0?}
 }
 \value{
 covariance between x and y
 }
 \description{
-Computest the covariance between two ff vectors.
-}
-\author{
-Mark Heron
+Computes the covariance between two ff vectors.
 }
 

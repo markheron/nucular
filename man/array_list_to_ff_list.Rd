@@ -13,9 +13,6 @@ array_list_to_ff_list(array_list)
 list of ff objects
 }
 \description{
-Creates a list where each element of array_list is saved in as an ff object
-}
-\author{
-Mark Heron
+Creates a copy of array_list where each element is saved as an ff object.
 }
 

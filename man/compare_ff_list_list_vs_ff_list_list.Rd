@@ -8,9 +8,9 @@ compare_ff_list_list_vs_ff_list_list(first_list, second_list,
   comparison_function)
 }
 \arguments{
-\item{first_list}{of the ff_list objects to compute the correlations from.}
+\item{first_list}{list of the ff_list objects to compute the correlations from}
 
-\item{second_list}{of the ff_list objects to compute the correlations to.}
+\item{second_list}{list of the ff_list objects to compute the correlations to}
 
 \item{comparison_function}{comparison function to use, e.g. cor_ff_list}
 }
@@ -18,9 +18,6 @@ compare_ff_list_list_vs_ff_list_list(first_list, second_list,
 comparison matrix
 }
 \description{
-Applies a comparison function pairwise between the list elements of two different lists and saves the results in a matrix
-}
-\author{
-Mark Heron
+Applies a comparison function pairwise between the list elements of two different lists and saves the results in a matrix.
 }
 

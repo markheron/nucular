@@ -9,15 +9,13 @@ mean_list(x, na.rm = TRUE)
 \arguments{
 \item{x}{list of numeric vectors}
 
-\item{na.rm}{should NA values be ignored (see sum)}
+\item{na.rm}{should NA values be ignored (see \code{\link{sum}})}
 }
 \value{
-mean of the list
+(numeric) mean of all values in the list
 }
 \description{
-calculates the mean of all list elements together
-}
-\author{
-Mark Heron
+Calculates the mean of all list elements together.
+I.e. the mean of all values contained in list elements, \emph{not} the mean of the mean of all list elements!
 }
 

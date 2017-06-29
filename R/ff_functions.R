@@ -13,13 +13,14 @@ NULL
 
 ##' cov_ff
 ##' 
-##' Computest the covariance between two ff vectors.
+##' Computes the covariance between two ff vectors.
+##' 
 ##' @export
-##' @param x a ff vector
-##' @param y a second ff vector
-##' @param centered boolean, is the mean already = 0 ?
+##' @param x (numeric ff vector)
+##' @param y (numeric ff vector)
+##' @param centered (boolean) are the means of x and y == 0?
 ##' @return covariance between x and y
-##' @author Mark Heron
+##' 
 cov_ff <- function(x,y,centered=FALSE) {
   
   if(centered) {
@@ -34,11 +35,12 @@ cov_ff <- function(x,y,centered=FALSE) {
 ##' sd_ff
 ##' 
 ##' Computes the standard deviation of a vector.
+##' 
 ##' @export
-##' @param x a ff vector
-##' @param centered boolean, is the mean already = 0 ?
+##' @param x (numeric ff vector)
+##' @param centered (boolean) is the mean of x == 0?
 ##' @return standard deviation of x
-##' @author Mark Heron
+##' 
 sd_ff <- function(x, centered=FALSE) {
   
   if(centered) {
@@ -52,13 +54,14 @@ sd_ff <- function(x, centered=FALSE) {
 
 ##' cor_ff
 ##' 
-##' Computes the correlation between two vectors.
+##' Computes the correlation between two ff vectors.
+##' 
 ##' @export
 ##' @param x a ff vector
 ##' @param y a second ff vector
-##' @param method ("pearson") which correlation should be computed, either "pearson" or "spearman" (has to briefly transform the ff's to vectors for rank)
-##' @return pearson correlation between x and y
-##' @author Mark Heron
+##' @param method one of "pearson" (default) or "spearman", which correlation should be computed. "spearman" has to briefly transform the ff's to vectors for rank.
+##' @return correlation between x and y
+##' 
 cor_ff <- function(x,y, method="pearson") {
   
   if(method == "pearson") {

@@ -7,17 +7,14 @@
 cor_ff_list(x, y)
 }
 \arguments{
-\item{x}{a list of ff vectors}
+\item{x}{list of ff vectors}
 
-\item{y}{a second list of ff vectors}
+\item{y}{list of ff vectors}
 }
 \value{
 pearson correlation between x and y
 }
 \description{
 Computes the correlation between two lists of ff vectors.
-}
-\author{
-Mark Heron
 }
 

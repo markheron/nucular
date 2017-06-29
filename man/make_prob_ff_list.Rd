@@ -7,22 +7,22 @@
 make_prob_ff_list(x)
 }
 \arguments{
-\item{x}{list of ff_vectors}
+\item{x}{(list of ff_vectors)}
 }
 \value{
-probability version of x (sum = 1)
+(list of ff_vectors) probability version of x (sum == 1)
 }
 \description{
-just use center_list
+use center_list
 scale_ff_list
 }
 \details{
-just_use scale_list
+use scale_list
+intra_scaling_ff_list
+
+use intre_scaling_list
 make_prob_ff_list
 
-scales all list elements so their sum is 1, i.e. ig there are no negative values they can be used as a probability
-}
-\author{
-Mark Heron
+Scales all list elements so their sum is 1, i.e. if there are no negative values they can be used as probabilities.
 }
 

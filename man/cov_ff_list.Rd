@@ -7,19 +7,16 @@
 cov_ff_list(x, y, centered = FALSE)
 }
 \arguments{
-\item{x}{a list of ff vectors}
+\item{x}{list of ff vectors}
 
-\item{y}{a second list of ff vectors}
+\item{y}{list of ff vectors}
 
-\item{centered}{boolean, is the mean of x and y already = 0 ?}
+\item{centered}{(boolean) is the mean_list of x and y == 0?}
 }
 \value{
 covariance between x and y
 }
 \description{
-Computest the covariance between two ff vectors.
-}
-\author{
-Mark Heron
+Computest the covariance between two ff vector lists.
 }
 
