@@ -1,13 +1,12 @@
 Package: nucular
 Type: Package
-Title: nucleosomal nucleotide frequencies Automatic Report
+Title: utility functions used for the analysis of genomic nucleosome data
 Version: 0.2
 Date: 2017
 Authors@R: person("Mark", "Heron", email = "heron@genzentrum.lmu.de",
                   role = c("aut", "cre"))
-Description: Generates a set of figures for nucleosomal data, showing the
-    fragment length distribution, occupancy, nucleotide frequencies around the
-    mapped ends or dyad positions and correlations between different data sets.
+Description: Provides convienience functions for handling (nucleosomal) genomic data as lists of ff vectors (or vectors).
+    The focus lies on comparing the genomic data by computing correlations and other comparison scores between the vector lists.
 License: GPL-3
 Imports:
     ff,

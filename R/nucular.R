@@ -1,8 +1,9 @@
-##' nucleosomal nucleotide frequencies Automatic Report
+##' nucleosomal utilities for lists
 ##' 
-##' Generates a set of figures for nucleosomal data, showing the fragment length distribution, occupancy, nucleotide frequencies around the mapped ends or dyad positions and correlations between different data sets
+##' Provides convienience functions for handling (nucleosomal) genomic data as lists of ff vectors (or vectors).
+##' The focus lies on comparing the genomic data by computing correlations and other comparison scores between the vector lists.
 ##' 
-##' This package provides basic functions to handle nucleosome data, nuccontrol and nucppp actually do the reporting, so it might need a renaming.
+##' (nuccontrol and nucppp actually do reporting)
 ##' 
 ##' @name nucular-package
 ##' @author Mark Heron

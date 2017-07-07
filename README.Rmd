@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-## nucular
+## nucular -- utility functions used for the analysis of genomic nucleosome data
 
 The **nucular** package provides convienience functions for handling genomic data as lists of ff vectors (or vectors).
 The focus lies on comparing the genomic data by computing correlations and other comparison scores between the vector lists.
