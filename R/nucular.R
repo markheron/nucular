@@ -8,11 +8,7 @@
 ##' @author Mark Heron
 ##' @docType package
 ##' 
-##' @import ff
 ##' @import ffbase
-##' @import Biostrings
-##' @import maRs
-##' @import pRon
 NULL
 
 
@@ -31,14 +27,14 @@ convertRaw2Rdata <- function(name, folder="", extension=".tabular") {
   
   warning("convertRaw2Rdata assumes the data has a 1-based genome index, not 0-based!")
   
-  raw_table <- read.table.ffdf(file=paste0(folder,name,extension), sep="\t", comment.char="", header=FALSE, col.names=c("chr", "start", "stop", "length", NA), colClasses=c("factor", "integer", "integer", "integer","NULL"))
+  raw_table <- ff::read.table.ffdf(file=paste0(folder,name,extension), sep="\t", comment.char="", header=FALSE, col.names=c("chr", "start", "stop", "length", NA), colClasses=c("factor", "integer", "integer", "integer","NULL"))
   
   chr_list_table <- list()
   
   for( chr_name in levels(raw_table[,1])) {
     chr_list_table[[chr_name]] <- subset(raw_table, chr == chr_name )[-1]
   }
-  chr_table <- lapply(chr_list_table, as.ram)
+  chr_table <- lapply(chr_list_table, ff::as.ram)
   save(chr_table, file=paste0(name,"_chr_table.Rdata"), compress=TRUE)
   return(chr_table)
 }
@@ -62,10 +58,10 @@ convertRaw2Rdata <- function(name, folder="", extension=".tabular") {
 ##' 
 plotGenomicCutouts <- function(pos, strand, size, order, genome, chromosomes, sample=0) {
     
-  comp_oli_pos <- complementary_oligo_positions(order+1)
+  comp_oli_pos <- pRon::complementary_oligo_positions(order+1)
   
   if( is.character(genome)) {
-    fasta_genome <- read_genome_fasta(genome)
+    fasta_genome <- pRon::read_genome_fasta(genome)
     names(fasta_genome) <- sub("chr", "", names(fasta_genome))
   } else if (class(genome) == "DNAStringSet"){
     fasta_genome <- genome
@@ -73,18 +69,18 @@ plotGenomicCutouts <- function(pos, strand, size, order, genome, chromosomes, sa
     stop("genome is neither a string nor a DNAStringSet !")
   }
   
-  freqs <- matrix(0, nrow=length(oligo_names(order+1)), size*2+1)
+  freqs <- matrix(0, nrow=length(pRon::oligo_names(order+1)), size*2+1)
   
   for(chr in chromosomes) {
     
-    freqs_chr <- matrix(0, nrow=length(oligo_names(order+1)), size*2+1)
+    freqs_chr <- matrix(0, nrow=length(pRon::oligo_names(order+1)), size*2+1)
     
     good <- (1:nrow(pos[[chr]]))[( pos[[chr]][,1] > size+order & pos[[chr]][,1] < length(fasta_genome[[chr]]) - size )]
     if(sample > 0) {
       good <- good[1:sample]
     }    
     
-    chr_num <- fasta2num(fasta_genome[chr], order+1, method="memoryLimited")
+    chr_num <- pRon::fasta2num(fasta_genome[chr], order+1, method="memoryLimited")
     chr_num[is.na(chr_num)] <- 0
     pos_chr <- pos[[chr]][good,]
     
@@ -111,10 +107,10 @@ plotGenomicCutouts <- function(pos, strand, size, order, genome, chromosomes, sa
   }
   
   freqs <- t(apply(freqs, 1, function (x) x/colSums(freqs)))
-  rownames(freqs)  <- oligo_names(order+1) 
+  rownames(freqs)  <- pRon::oligo_names(order+1) 
   
   
-  plotOligoFreqs(freqs, x_pos=-size:size)
+  pRon::plotOligoFreqs(freqs, x_pos=-size:size)
   
   invisible(freqs)
 }
@@ -153,14 +149,14 @@ cor_nucs <- function(data_list1, data_list2, lengths) {
 ##' 
 cor_nucs_using_single_vecs <- function(data_list1, data_list2, lengths) {
   
-  complete1 <- convertSparse2Complete_ff(data_list1[names(lengths)], lengths)
-  complete2 <- convertSparse2Complete_ff(data_list2[names(lengths)], lengths)
+  complete1 <- pRon::convertSparse2Complete_ff(data_list1[names(lengths)], lengths)
+  complete2 <- pRon::convertSparse2Complete_ff(data_list2[names(lengths)], lengths)
   
-  occ1 <- smear_ff(complete1[[names(lengths)[1]]], -73,73)
-  occ2 <- smear_ff(complete2[[names(lengths)[1]]], -73,73)
+  occ1 <- maRs::smear_ff(complete1[[names(lengths)[1]]], -73,73)
+  occ2 <- maRs::smear_ff(complete2[[names(lengths)[1]]], -73,73)
   for(chr in names(lengths)[-1]) {
-    occ1 <- c(occ1, smear_ff(complete1[[chr]], -73,73))
-    occ2 <- c(occ2, smear_ff(complete2[[chr]], -73,73))
+    occ1 <- c(occ1, maRs::smear_ff(complete1[[chr]], -73,73))
+    occ2 <- c(occ2, maRs::smear_ff(complete2[[chr]], -73,73))
   }
   return(cor_ff(occ1, occ2))
 }
@@ -201,7 +197,7 @@ get_dyad_pos <- function(data_list, dyad_base="center", offset=73) {
   dyad_pos <- list()
   
   to_ffdf_table <- function (x) {
-    return( as.ffdf(as.data.frame(table(x))) )
+    return( ff::as.ffdf(as.data.frame(table(x))) )
   }
   
   for(chr_name in names(data_list)) {
@@ -216,7 +212,7 @@ get_dyad_pos <- function(data_list, dyad_base="center", offset=73) {
       tmp <- to_ffdf_table( c(data_list[[chr_name]][,1]+offset, data_list[[chr_name]][,2]-offset) )
     }
     
-    dyad_pos[[chr_name]] <- as.ff(matrix(c(as.numeric(as.character(tmp[,1])), tmp[,2]), ncol=2))
+    dyad_pos[[chr_name]] <- ff::as.ff(matrix(c(as.numeric(as.character(tmp[,1])), tmp[,2]), ncol=2))
   }
   return(dyad_pos)
 }
@@ -266,7 +262,7 @@ mask_repeats <- function(occ_single, mask_file_folder, repeats_to_mask, nuc_half
     repeats[,1] <- pmax(1, repeats[,1]-nuc_half_width)
     repeats[,2] <- pmin(length(occ_single[[chr]]), repeats[,2]+nuc_half_width)
     
-    occ_masked[[chr]] <- clone(occ_single[[chr]], pattern="ff")
+    occ_masked[[chr]] <- ff::clone(occ_single[[chr]], pattern="ff")
     for(i in 1:nrow(repeats)) {
       occ_masked[[chr]][repeats[i,1]:repeats[i,2]] <- NA
     }
@@ -290,9 +286,9 @@ mask_Ns_in_ff_list <- function(ff_list, genome_fasta) {
   
   masked_ff_list <- list()
   for(name in names(ff_list)) {
-    masked_ff_list[[name]] <- clone(ff_list[[name]])
+    masked_ff_list[[name]] <- ff::clone(ff_list[[name]])
     
-    fasta_num <- fasta2num(genome_fasta[name], 1)
+    fasta_num <- pRon::fasta2num(genome_fasta[name], 1)
     masked_ff_list[[name]][is.na(fasta_num)] <- NA
   }
   return(masked_ff_list)
@@ -312,6 +308,6 @@ uniquify_ff_list <- function(ff_list) {
   if (!requireNamespace("plyr", quietly = TRUE)) {
     stop("plyr needed for this function to work. Please install it.", call. = FALSE)
   }
-  uniquified_ff_list <- lapply(ff_list, function(x) as.ff(as.matrix( plyr::count(x)[, 1:3])))
+  uniquified_ff_list <- lapply(ff_list, function(x) ff::as.ff(as.matrix( plyr::count(x)[, 1:3])))
   return(uniquified_ff_list)
 }

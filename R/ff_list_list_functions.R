@@ -5,7 +5,6 @@
 ##' @name ff_list_list_functions
 ##' @author Mark Heron
 ##' 
-##' @import ff
 ##' @import ffbase
 NULL
 

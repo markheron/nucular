@@ -5,9 +5,7 @@
 ##' @name ff_list_functions
 ##' @author Mark Heron
 ##' 
-##' @import ff
 ##' @import ffbase
-##' @import maRs
 NULL
 
 
@@ -46,7 +44,7 @@ array_list_to_ff_list <- function(array_list) {
   ff_list <- list()
   for(name in names(array_list)) {
     if( !is.null(array_list[[name]]) & all(dim(array_list[[name]]) > 0) ) {
-      ff_list[[name]] <- as.ff(as.array(array_list[[name]]))
+      ff_list[[name]] <- ff::as.ff(as.array(array_list[[name]]))
     } else {
       warning(paste("The array_list element", name, "is empty and skipped!"))
     }
@@ -67,7 +65,7 @@ df_list_to_ffdf_list <- function(df_list) {
   
   ff_list <- list()
   for(name in names(df_list)) {
-    ff_list[[name]] <- as.ffdf(df_list[[name]])
+    ff_list[[name]] <- ff::as.ffdf(df_list[[name]])
   }
   return(ff_list)
 }
@@ -89,9 +87,9 @@ filter_column_range_ff_list <- function(ff_list, column, min, max) {
   filtered_ff_list <- lapply(ff_list, function (x) {
     tmp <- (x[,column] >= min) & (x[,column] <= max)
     if(sum(tmp) > 0) {
-      as.ff(as.matrix(x[tmp ,]))
+      ff::as.ff(as.matrix(x[tmp ,]))
     } else {
-      as.ram(x)[0,] # slight hack since ff objects can't be empty
+      ff::as.ram(x)[0,] # slight hack since ff objects can't be empty
     }
   } )
   return(filtered_ff_list)
@@ -109,7 +107,7 @@ filter_column_range_ff_list <- function(ff_list, column, min, max) {
 ##' 
 convertSparse2occ_ff_list <- function(sparse, lengths) {
   
-  occ <- lapply(convertSparse2Complete_ff(sparse, lengths), function (x) smear_ff(x, -73,73))
+  occ <- lapply(pRon::convertSparse2Complete_ff(sparse, lengths), function (x) maRs::smear_ff(x, -73,73))
   return(occ)
 }
 
@@ -218,9 +216,9 @@ likelihood_ff_list <- function(predictions, measurements) {
   # replace zero predictions with minimum predictions, so that the likelihood isn't -Inf because of them
   tmp_pred <- list()
   for(i in names(predictions)) {
-    tmp_pred[[i]] <- clone.ff(predictions[[i]])
+    tmp_pred[[i]] <- ff::clone.ff(predictions[[i]])
     if( sum(tmp_pred[[i]] == 0, na.rm=TRUE) > 0) {
-      tmp_pred[[i]][ (tmp_pred[[i]] == 0) & !(is.na(tmp_pred[[i]])) ] <- as.ff(rep(min(tmp_pred[[i]][tmp_pred[[i]] > 0]), sum(tmp_pred[[i]] == 0, na.rm=TRUE)))
+      tmp_pred[[i]][ (tmp_pred[[i]] == 0) & !(is.na(tmp_pred[[i]])) ] <- ff::as.ff(rep(min(tmp_pred[[i]][tmp_pred[[i]] > 0]), sum(tmp_pred[[i]] == 0, na.rm=TRUE)))
     }
   }
   
