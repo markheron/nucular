@@ -1,4 +1,5 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+
 nucular -- utility functions used for the analysis of genomic nucleosome data
 -----------------------------------------------------------------------------
 
