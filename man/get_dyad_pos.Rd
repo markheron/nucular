@@ -19,4 +19,3 @@ list of ff matricies with dyad positions and intensities
 \description{
 Extracts the dyad positions in the chosen way from a table with mapped fragment start and ends
 }
-

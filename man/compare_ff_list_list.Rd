@@ -17,4 +17,3 @@ comparison matrix
 \description{
 Applies a comparison function pairwise between all data_list elements and saves the results in a matrix
 }
-

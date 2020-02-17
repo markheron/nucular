@@ -19,4 +19,3 @@ correlation pearson correlation between the nucleosome occupancies
 \description{
 Calculates the pearson correlation between two nucleosome occupancy profiles given their sparse representation.
 }
-

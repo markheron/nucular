@@ -21,4 +21,3 @@ list of ff's filtered by min/max on column
 \description{
 Filters the rows of the ff matrices in the list based on \code{column}, \code{min} and \code{max}.
 }
-

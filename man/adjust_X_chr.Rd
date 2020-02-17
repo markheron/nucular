@@ -19,4 +19,3 @@ reference to the ff_list, which is now adjusted. IMPORTANT: this is the same ff_
 \description{
 Adjusts lower X chromosome counts due to cells being male or a mixture of male/female.
 }
-

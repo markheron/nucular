@@ -20,4 +20,3 @@ comparison matrix
 \description{
 Applies a comparison function pairwise between the list elements of two different lists and saves the results in a matrix.
 }
-

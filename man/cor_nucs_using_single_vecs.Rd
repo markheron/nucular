@@ -20,4 +20,3 @@ correlation pearson correlation between the nucleosome occupancies
 Calculates the pearson correlation between two nucleosome occupancy profiles given their sparse representation.
 Same as cor_nucs but uses an older non-optimized method, being kept for testing purposis.
 }
-

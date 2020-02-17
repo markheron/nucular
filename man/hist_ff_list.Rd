@@ -16,4 +16,3 @@ hist_ff_list(ff_list, column, ...)
 \description{
 Plots a histogram for the values in \code{column} for every ff_list element.
 }
-

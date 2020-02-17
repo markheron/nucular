@@ -16,4 +16,3 @@ convertRaw2Rdata(name, folder = "", extension = ".tabular")
 \description{
 Converts raw data tables from the galaxy pipeline to lists of matricies that is saved as an Rdata for futher use.
 }
-

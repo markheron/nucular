@@ -19,4 +19,3 @@ covariance between x and y
 \description{
 Computest the covariance between two ff vector lists.
 }
-

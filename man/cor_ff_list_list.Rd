@@ -15,4 +15,3 @@ correlation matrix
 \description{
 Computes the pairwise correlations between the list elements and saves them in a matrix.
 }
-

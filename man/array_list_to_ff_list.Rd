@@ -15,4 +15,3 @@ list of ff objects
 \description{
 Creates a copy of array_list where each element is saved as an ff object.
 }
-

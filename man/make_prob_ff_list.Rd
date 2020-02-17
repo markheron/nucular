@@ -25,4 +25,3 @@ make_prob_ff_list
 
 Scales all list elements so their sum is 1, i.e. if there are no negative values they can be used as probabilities.
 }
-

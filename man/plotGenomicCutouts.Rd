@@ -4,7 +4,8 @@
 \alias{plotGenomicCutouts}
 \title{plotGenomicCutouts}
 \usage{
-plotGenomicCutouts(pos, strand, size, order, genome, chromosomes, sample = 0)
+plotGenomicCutouts(pos, strand, size, order, genome, chromosomes,
+  sample = 0)
 }
 \arguments{
 \item{pos}{ff_list of the nucleosome fragments}
@@ -27,4 +28,3 @@ olinucleotide frequency matrix, rows are the oligonucleotides, cols the position
 \description{
 Create oligonucleotide frequency profile figure from genome positions
 }
-

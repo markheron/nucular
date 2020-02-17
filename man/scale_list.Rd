@@ -16,4 +16,3 @@ scale_list(x)
 Scales all list elements by their combined mean.
 Works with lists of ff vectors.
 }
-

@@ -19,4 +19,3 @@ covariance between x and y
 \description{
 Computes the covariance between two ff vectors.
 }
-

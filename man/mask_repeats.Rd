@@ -22,4 +22,3 @@ the masked occupancy ff vector list (cloned so the original is \emph{not} change
 \description{
 Masks repeat regions read from repeatMasker output files.
 }
-

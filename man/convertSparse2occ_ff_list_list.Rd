@@ -17,4 +17,3 @@ list of lists of ff vectors with genomic occuopancy
 \description{
 Individually converts a list of different sparse representation of dyad positions to nucleosome occupancy as list of ff vectors.
 }
-

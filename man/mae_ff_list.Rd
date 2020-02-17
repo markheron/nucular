@@ -17,4 +17,3 @@ mae_ff_list(predictions, measurements)
 \description{
 Computes the mean absolute error between two ff_lists.
 }
-

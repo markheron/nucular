@@ -16,4 +16,3 @@ center_list(x)
 Centers all list elements by their combined mean.
 Works with lists of ff vectors.
 }
-

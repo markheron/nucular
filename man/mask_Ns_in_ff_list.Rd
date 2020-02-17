@@ -17,4 +17,3 @@ masked ff_list (cloned so the original is \emph{not} changed)
 \description{
 Masks an ff_list based on N's in the genomic sequence.
 }
-

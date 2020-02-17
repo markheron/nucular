@@ -18,4 +18,3 @@ mean_list(x, na.rm = TRUE)
 Calculates the mean of all list elements together.
 I.e. the mean of all values contained in list elements, \emph{not} the mean of the mean of all list elements!
 }
-

@@ -9,4 +9,3 @@ Copies of several functions that are originally for numeric vectors, but in this
 \author{
 Mark Heron
 }
-

@@ -15,4 +15,3 @@ list of ffdf objects
 \description{
 Creates a copy of df_list where each element is saved as an ffdf object.
 }
-

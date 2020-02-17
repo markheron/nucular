@@ -17,4 +17,3 @@ pearson correlation between x and y
 \description{
 Computes the correlation between two lists of ff vectors.
 }
-

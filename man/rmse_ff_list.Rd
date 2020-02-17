@@ -17,4 +17,3 @@ rmse_ff_list(predictions, measurements)
 \description{
 Computes the root mean square error between two ff_lists.
 }
-

@@ -17,4 +17,3 @@ likelihood_ff_list(predictions, measurements)
 \description{
 Computes a simple likelihood of a list of prediction vectors given a matching list of measurement vectors.
 }
-

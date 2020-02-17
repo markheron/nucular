@@ -17,4 +17,3 @@ top triangle matrix of the pearson correlations between nucleosome occupancies
 \description{
 Computes all pairwise pearson correlations between the nucleosome occupancies.
 }
-

@@ -19,4 +19,3 @@ correlation between x and y
 \description{
 Computes the correlation between two ff vectors.
 }
-

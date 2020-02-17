@@ -17,4 +17,3 @@ Scales each vector in the list to mean == 1.
 Simple wrapper for lapply '/' mean.
 Works with lists of ff vectors.
 }
-

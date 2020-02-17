@@ -17,4 +17,3 @@ standard deviation of x
 \description{
 Computes the standard deviation of a ff vector list.
 }
-

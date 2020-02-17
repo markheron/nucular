@@ -17,4 +17,3 @@ sum_list(x, na.rm = TRUE)
 \description{
 Calculates the sum of all list elements together.
 }
-
